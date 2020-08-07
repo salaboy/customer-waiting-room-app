@@ -1,0 +1,35 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+      - id: router
+        uri: ${CLOUD_EVENT_ROUTER:http://zeebe-cloud-events-router}
+        predicates:
+          - Path=/router/**
+        filters:
+          - RewritePath=/router/(?<id>.*), /$\{id}
+      - id: tickets
+        uri: ${TICKETS_SERVICE:http://tickets-service}
+        predicates:
+        - Path=/tickets/**
+        filters:
+          - RewritePath=/tickets/(?<id>.*), /$\{id}
+      - id: payments
+        uri: ${PAYMENTS_SERVICE:http://payments-service}
+        predicates:
+          - Path=/payments/**
+        filters:
+          - RewritePath=/payments/(?<id>.*), /$\{id}
+      - id: queue
+        uri: ${QUEUE_SERVICE:http://queue-service}
+        predicates:
+          - Path=/queue/**
+        filters:
+          - RewritePath=/queue/(?<id>.*), /$\{id}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: gateway, info, health
+
+
