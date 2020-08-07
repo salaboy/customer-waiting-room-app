@@ -1,7 +1,10 @@
 package com.salaboy.knative.waitingroom;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.salaboy.cloudevents.helper.CloudEventsHelper;
 import com.salaboy.knative.waitingroom.models.ServiceInfo;
+import io.cloudevents.CloudEvent;
+import io.cloudevents.v03.AttributesImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -148,9 +151,11 @@ class SiteRestController{
     }
 
 
-    @PostMapping("/{sessionId}")
-    public String pushDataViaWebSocket(@PathVariable String sessionId){
-        handler.getEmitterProcessor().onNext( sessionId + "," + UUID.randomUUID().toString());
+    @PostMapping("/")
+    public String pushDataViaWebSocket(@RequestHeader Map<String, String> headers, @RequestBody String body){
+        CloudEvent<AttributesImpl, String> cloudEvent = CloudEventsHelper.parseFromRequest(headers, body);
+        //handler.getEmitterProcessor().onNext( sessionId + "," + UUID.randomUUID().toString());
+        handler.getEmitterProcessor().onNext( cloudEvent.toString() );
         return "OK!";
     }
 

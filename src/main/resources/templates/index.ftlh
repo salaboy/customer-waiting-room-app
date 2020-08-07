@@ -103,9 +103,9 @@
         }
 
         console.log(data);
-      //  xhr.send(data);
+        xhr.send(data);
 
-
+        connect();
     }
 
     function callback(response){
