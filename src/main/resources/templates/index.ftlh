@@ -113,7 +113,7 @@
     }
 
     var ws = null;
-    var url = "ws://localhost:8080/ws?sessionId=${sessionId}";
+    var url = "ws://${externalIp}/ws?sessionId=${sessionId}";
 
     function setConnected(connected)
     {

@@ -185,6 +185,9 @@ class TicketsSiteController {
     @Value("${QUEUE_SERVICE:http://queue-service}")
     private String QUEUE_SERVICE;
 
+    @Value("${EXTERNAL_IP:localhost:8080}")
+    private String EXTERNAL_IP;
+
     private RestTemplate restTemplate = new RestTemplate();
 
 
@@ -232,6 +235,7 @@ class TicketsSiteController {
         model.addAttribute("payments", paymentsInfo);
         model.addAttribute("queuePosition", queuePosition);
         model.addAttribute("queueSize", queueSize);
+        model.addAttribute("externalIp", EXTERNAL_IP);
 
 
         return "index";
