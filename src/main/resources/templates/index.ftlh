@@ -81,8 +81,9 @@
 <script src="js/vendor/modernizr-3.7.1.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"
         integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
-<script>window.jQuery || document.write('<script src="js/vendor/jquery-3.4.1.min.js"><\/script>')</script>
+<script>window.jQuery || document.write('<script src="js/vendor/jquery-3.4.1reconnecting-websocket.min.js"><\/script>')</script>
 <script src="js/plugins.js"></script>
+<script defer src="js/reconnecting-websocket.min.js"></script>
 <script type="text/javascript">
 
     function joinQueue() {
@@ -112,8 +113,16 @@
         console.log(response);
     }
 
-    var ws = null;
-    var url = "ws://${externalIp}/ws?sessionId=${sessionId}";
+
+
+    console.log("Protocol: " + location.protocol);
+    let wsURL = "ws://" + document.location.host + "/ws";
+    if (location.protocol === 'https:') {
+        wsURL = "wss://" + document.location.host + "/ws";
+    }
+    console.log("WS URL: " + wsURL);
+
+    sock = new ReconnectingWebSocket(wsURL);
 
     function setConnected(connected)
     {
@@ -124,17 +133,21 @@
 
     function connect()
     {
-        ws = new WebSocket(url);
-        ws.onopen = function() {
+
+
+        sock.onopen = function() {
             setConnected(true);
             log('Info: Connection Established.');
         };
 
-        ws.onmessage = function(event) {
+        sock.onmessage = function(event) {
             log(event.data);
         };
 
-        ws.onclose = function(event) {
+        sock.onerror = function(event){
+            log("EFFOR: " + event);
+        }
+        sock.onclose = function(event) {
 
             setConnected(false);
             log('Info: Closing Connection. -> ' + event);

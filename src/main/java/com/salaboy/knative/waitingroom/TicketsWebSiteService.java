@@ -117,6 +117,8 @@ class ReactiveWebSocketHandler implements WebSocketHandler {
             }));
 
             webSocketSession.receive()
+                    .doOnComplete(() -> log.info("on complete??"))
+                    .doOnError(t -> t.printStackTrace())
                     .doFinally(sig -> {
                 log.info("Terminating WebSocket Session (client side) sig: [{}], [{}]", sig.name(), sessionId);
                 webSocketSession.close();
@@ -184,9 +186,6 @@ class TicketsSiteController {
 
     @Value("${QUEUE_SERVICE:http://queue-service}")
     private String QUEUE_SERVICE;
-
-    @Value("${EXTERNAL_IP:localhost:8080}")
-    private String EXTERNAL_IP;
 
     private RestTemplate restTemplate = new RestTemplate();
 
