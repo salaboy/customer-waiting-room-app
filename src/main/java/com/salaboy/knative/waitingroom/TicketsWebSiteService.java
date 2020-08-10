@@ -88,7 +88,7 @@ class ReactiveWebSocketHandler implements WebSocketHandler {
 
 
     public ReactiveWebSocketHandler() {
-        System.out.println(">>> HANDLER: " + this.hashCode());
+        log.info(">>> HANDLER: " + this.hashCode());
     }
 
     public EmitterProcessor<String> getEmitterProcessor(String id) {
@@ -110,7 +110,7 @@ class ReactiveWebSocketHandler implements WebSocketHandler {
 
         String sessionId = webSocketSession.getHandshakeInfo().getUri().getQuery().split("=")[1];
         if (sessions.add(sessionId)) {
-            System.out.println("Session Id added: " + sessionId);
+            log.info("Session Id added: " + sessionId);
             processors.put(sessionId, EmitterProcessor.create());
             Flux<String> cloudEventsFlux = processors.get(sessionId).map(x -> "consume: " + x);
 
@@ -130,6 +130,7 @@ class ReactiveWebSocketHandler implements WebSocketHandler {
                 webSocketSession.close();
                 sessions.remove(sessionId);  // remove the stored session id
                 processors.remove(sessionId);
+                log.info("remove session and processor for id: " + sessionId);
             }).map(WebSocketMessage::getPayloadAsText).log());
 
         }
