@@ -142,6 +142,7 @@ class ReactiveWebSocketHandler implements WebSocketHandler {
 
 @RestController
 @RequestMapping("/api/")
+@Slf4j
 class SiteRestController {
 
     @Value("${version:0.0.0}")
@@ -180,6 +181,7 @@ class SiteRestController {
 
 
 @Controller
+@Slf4j
 class TicketsSiteController {
 
 
