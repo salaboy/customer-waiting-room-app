@@ -1,0 +1,68 @@
+
+Showing logs for build [32msalaboy-customer-waiting-room-a-fsq9s-11[0m stage [32mfrom-build-pack[0m and container [32mcredential-initializer[0m
+{"level":"info","ts":1597060729.1567247,"caller":"creds-init/main.go:44","msg":"Credentials initialized."}
+
+Showing logs for build [32msalaboy-customer-waiting-room-a-fsq9s-11[0m stage [32mfrom-build-pack[0m and container [32mworking-dir-initializer[0m
+
+Showing logs for build [32msalaboy-customer-waiting-room-a-fsq9s-11[0m stage [32mfrom-build-pack[0m and container [32mplace-tools[0m
+
+Showing logs for build [32msalaboy-customer-waiting-room-a-fsq9s-11[0m stage [32mfrom-build-pack[0m and container [32mstep-git-source-salaboy-customer-waiting-room-a-fsq9s-cq4df[0m
+{"level":"info","ts":1597060738.4532008,"caller":"git/git.go:105","msg":"Successfully cloned https://github.com/*******/customer-waiting-room-app.git @ v0.0.11 in path /workspace/source"}
+{"level":"warn","ts":1597060738.453542,"caller":"git/git.go:152","msg":"Unexpected error: creating symlink: symlink /tekton/home/.ssh /root/.ssh: file exists"}
+{"level":"info","ts":1597060738.521925,"caller":"git/git.go:133","msg":"Successfully initialized and updated submodules in path /workspace/source"}
+
+Showing logs for build [32msalaboy-customer-waiting-room-a-fsq9s-11[0m stage [32mfrom-build-pack[0m and container [32mstep-setup-builder-home[0m
+
+Showing logs for build [32msalaboy-customer-waiting-room-a-fsq9s-11[0m stage [32mfrom-build-pack[0m and container [32mstep-git-merge[0m
+Using SHAs from PULL_REFS=master:3c8b59beabbda97e0f692ea59f4ad948516d18ad
+WARNING: no SHAs to merge, falling back to initial cloned commit
+
+Showing logs for build [32msalaboy-customer-waiting-room-a-fsq9s-11[0m stage [32mfrom-build-pack[0m and container [32mstep-setup-jx-git-credentials[0m
+Generated Git credentials file /workspace/xdg_config/git/credentials
+
+Showing logs for build [32msalaboy-customer-waiting-room-a-fsq9s-11[0m stage [32mfrom-build-pack[0m and container [32mstep-build-mvn-deploy[0m
+Picked up _JAVA_OPTIONS: -XX:+UnlockExperimentalVMOptions -Dsun.zip.disableMemoryMapping=true -XX:+UseParallelGC -XX:MinHeapFreeRatio=5 -XX:MaxHeapFreeRatio=10 -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Xms10m -Xmx192m
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -----------< com.*******.knative:customer-waiting-room-app >------------
+[INFO] Building Knative Example :: Customer Waiting Room App 0.0.11
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:3.1.0:clean (default-clean) @ customer-waiting-room-app ---
+[INFO] 
+[INFO] --- maven-resources-plugin:3.1.0:resources (default-resources) @ customer-waiting-room-app ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 1 resource
+[INFO] Copying 17 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.8.1:compile (default-compile) @ customer-waiting-room-app ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 2 source files to /workspace/source/target/classes
+[INFO] -------------------------------------------------------------
+[ERROR] COMPILATION ERROR : 
+[INFO] -------------------------------------------------------------
+[ERROR] /workspace/source/src/main/java/com/*******/knative/waitingroom/TicketsWebSiteService.java:[163,9] cannot find symbol
+  symbol:   variable log
+  location: class com.*******.knative.waitingroom.SiteRestController
+[INFO] 1 error
+[INFO] -------------------------------------------------------------
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  23.888 s
+[INFO] Finished at: 2020-08-10T11:59:29Z
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.8.1:compile (default-compile) on project customer-waiting-room-app: Compilation failure
+[ERROR] /workspace/source/src/main/java/com/*******/knative/waitingroom/TicketsWebSiteService.java:[163,9] cannot find symbol
+[ERROR]   symbol:   variable log
+[ERROR]   location: class com.*******.knative.waitingroom.SiteRestController
+[ERROR] 
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException
+[31m
+Pipeline failed on stage 'from-build-pack' : container 'step-build-mvn-deploy'. The execution of the pipeline has stopped.[0m
