@@ -161,12 +161,12 @@ class SiteRestController {
     @PostMapping("/")
     public String pushDataViaWebSocket(@RequestHeader Map<String, String> headers, @RequestBody String body) {
         CloudEvent<AttributesImpl, String> cloudEvent = CloudEventsHelper.parseFromRequest(headers, body);
-        log.info("Getting processor for session Id: " + headers.get("sessionId"));
+        log.info("Getting processor for session Id: " + headers.get("SessionId"));
         log.info("All HEADERS: " );
         for(String key : headers.keySet()){
-            log.info(">> HEADER: " + key + "VALUE" + headers.get(key));
+            log.info(">> HEADER: " + key + " -> VALUE" + headers.get(key));
         }
-        handler.getEmitterProcessor(headers.get("sessionId")).onNext(cloudEvent.toString());
+        handler.getEmitterProcessor(headers.get("SessionId")).onNext(cloudEvent.toString());
         return "OK!";
     }
 
