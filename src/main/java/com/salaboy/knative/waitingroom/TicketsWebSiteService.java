@@ -1,5 +1,6 @@
 package com.salaboy.knative.waitingroom;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.salaboy.cloudevents.helper.CloudEventsHelper;
 import com.salaboy.knative.waitingroom.models.ServiceInfo;
@@ -147,6 +148,7 @@ class SiteRestController {
 
     @Value("${version:0.0.0}")
     private String version;
+    private ObjectMapper objectMapper = new ObjectMapper();
 
 
     @Autowired
@@ -159,14 +161,20 @@ class SiteRestController {
 
 
     @PostMapping("/")
-    public String pushDataViaWebSocket(@RequestHeader Map<String, String> headers, @RequestBody String body) {
+    public String pushDataViaWebSocket(@RequestHeader Map<String, String> headers, @RequestBody String body) throws JsonProcessingException {
         CloudEvent<AttributesImpl, String> cloudEvent = CloudEventsHelper.parseFromRequest(headers, body);
-        log.info("Getting processor for session Id: " + headers.get("Sessionid"));
-        log.info("All HEADERS: " );
-        for(String key : headers.keySet()){
-            log.info(">> HEADER: " + key + " -> VALUE: " + headers.get(key));
-        }
-        handler.getEmitterProcessor(headers.get("Sessionid")).onNext(cloudEvent.toString());
+//        log.info("Getting processor for session Id: " + headers.get("Sessionid"));
+//        log.info("All HEADERS: " );
+//        for(String key : headers.keySet()){
+//            log.info(">> HEADER: " + key + " -> VALUE: " + headers.get(key));
+//        }
+
+        String data = cloudEvent.getData().get();
+        log.info("RAW Cloud Event Data" + data);
+        ClientSession clientSession = objectMapper.readValue(data, ClientSession.class);
+        log.info("Client Session from Cloud Event Data" + clientSession.getSessionId());
+        log.info("Getting processor for session Id: " + clientSession.getSessionId());
+        handler.getEmitterProcessor(clientSession.getSessionId()).onNext(cloudEvent.toString());
         return "OK!";
     }
 
