@@ -89,7 +89,7 @@
 
     function joinQueue() {
         var xhr = new XMLHttpRequest();
-        xhr.open("POST", "/router/workflow", true);
+        xhr.open("POST", "/router/message", true);
         var data = JSON.stringify({
             sessionId: "${sessionId}",
         });
@@ -97,6 +97,7 @@
         xhr.setRequestHeader('Ce-Id', 'CE-'+ "${sessionId}");
         xhr.setRequestHeader('Ce-Type', 'Tickets.Purchase');
         xhr.setRequestHeader('Ce-Source', 'website');
+        xhr.setRequestHeader('zeebe', '{\"correlationKey\": \"${sessionId}\" }');
 
         xhr.onreadystatechange = function() {
             if (xhr.readyState === 4) {
