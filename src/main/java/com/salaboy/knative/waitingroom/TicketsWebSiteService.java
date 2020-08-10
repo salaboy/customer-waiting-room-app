@@ -1,8 +1,12 @@
 package com.salaboy.knative.waitingroom;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.salaboy.cloudevents.helper.CloudEventsHelper;
+import com.salaboy.knative.waitingroom.models.ClientSession;
 import com.salaboy.knative.waitingroom.models.ServiceInfo;
 import io.cloudevents.CloudEvent;
 import io.cloudevents.v03.AttributesImpl;
@@ -171,7 +175,9 @@ class SiteRestController {
 
         String data = cloudEvent.getData().get();
         log.info("RAW Cloud Event Data" + data);
-        ClientSession clientSession = objectMapper.readValue(data, ClientSession.class);
+        String stringVersion = objectMapper.readValue(data, String.class);
+        ClientSession clientSession = objectMapper.readValue(stringVersion, ClientSession.class);
+
         log.info("Client Session from Cloud Event Data" + clientSession.getSessionId());
         log.info("Getting processor for session Id: " + clientSession.getSessionId());
         handler.getEmitterProcessor(clientSession.getSessionId()).onNext(cloudEvent.toString());

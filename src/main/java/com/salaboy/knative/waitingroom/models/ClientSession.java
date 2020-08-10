@@ -1,16 +1,13 @@
-package com.salaboy.knative.waitingroom;
+package com.salaboy.knative.waitingroom.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ClientSession {
     private String sessionId;
 
     public ClientSession() {
-    }
-
-    public ClientSession(String sessionId) {
-        this.sessionId = sessionId;
     }
 
     public String getSessionId() {
