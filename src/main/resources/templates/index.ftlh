@@ -98,6 +98,7 @@
         xhr.setRequestHeader('Ce-Type', 'NewCustomer');
         xhr.setRequestHeader('Ce-Source', 'website');
         xhr.setRequestHeader('zeebe', '{\"correlationKey\": \"${sessionId}\" }');
+        xhr.setRequestHeader('CorrelationKey', "${sessionId}");
 
         xhr.onreadystatechange = function() {
             if (xhr.readyState === 4) {
