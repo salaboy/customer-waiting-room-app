@@ -5,13 +5,13 @@ import com.salaboy.cloudevents.helper.CloudEventsHelper;
 import com.salaboy.knative.waitingroom.models.ServiceInfo;
 import io.cloudevents.CloudEvent;
 import io.cloudevents.v03.AttributesImpl;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
@@ -28,15 +28,15 @@ import org.springframework.web.reactive.socket.server.support.HandshakeWebSocket
 import org.springframework.web.reactive.socket.server.support.WebSocketHandlerAdapter;
 import org.springframework.web.reactive.socket.server.upgrade.ReactorNettyRequestUpgradeStrategy;
 import org.springframework.web.server.WebSession;
-import reactor.core.CoreSubscriber;
 import reactor.core.publisher.EmitterProcessor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
-import java.net.URI;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+
+import static java.util.UUID.randomUUID;
 
 @SpringBootApplication
 @Slf4j
@@ -68,9 +68,9 @@ public class TicketsWebSiteService {
     @Bean
     public WebSocketHandlerAdapter handlerAdapter() {
         return new WebSocketHandlerAdapter(webSocketService());
-    }
+    } //
 
-
+    //
     public WebSocketService webSocketService() {
         return new HandshakeWebSocketService(new ReactorNettyRequestUpgradeStrategy());
     }
@@ -78,68 +78,63 @@ public class TicketsWebSiteService {
 
 }
 
+
 @Component
 @Slf4j
 class ReactiveWebSocketHandler implements WebSocketHandler {
 
+    private static final ObjectMapper json = new ObjectMapper();
+    private List<String> sessions = new CopyOnWriteArrayList<>();
+    private Map<String, EmitterProcessor<String>> processors = new ConcurrentHashMap<>();
 
-    private Map<String, WebSocketSession> sessions = new ConcurrentHashMap<>();
-    private EmitterProcessor<String> emitterProcessor = EmitterProcessor.create();
-    private Flux<String> cloudEventsFlux = emitterProcessor.map(x -> "consume: " + x);
 
-    public EmitterProcessor<String> getEmitterProcessor() {
-        return emitterProcessor;
+    public EmitterProcessor<String> getEmitterProcessor(String id) {
+        return processors.get(id);
     }
 
-    public Set<String> getSessionsId() {
-        return sessions.keySet();
+    public List<String> getSessionsId() {
+        return sessions;
     }
 
 
     @Override
     public Mono<Void> handle(WebSocketSession webSocketSession) {
         String id = webSocketSession.getId();
-        log.info(">>> WebSocketSession Id: " + id);
-        log.info(">>> QUERY SESSION ID: " + webSocketSession.getHandshakeInfo().getUri().getQuery());
+
         String sessionId = webSocketSession.getHandshakeInfo().getUri().getQuery().split("=")[1];
-        log.info(">>>  Session Id from connection: " + sessionId);
-        if(sessions.get(sessionId) == null) {
-            sessions.put(sessionId, webSocketSession);
 
-            log.info("Starting WebSocket Session [{}]", sessionId);
+
+        if (sessions.add(sessionId)) {
+            EmitterProcessor<String> processor = processors.put(sessionId, EmitterProcessor.create());
+            Flux<String> cloudEventsFlux = processors.get(sessionId).map(x -> "consume: " + x);
+
             // Send the session id back to the client
-            WebSocketMessage msg = webSocketSession.textMessage(String.format("{\"session\":\"%s\"}", sessionId));
-            // Register the outbound flux as the source of outbound messages
-            final Flux<WebSocketMessage> outFlux = Flux.concat(Flux.just(msg), cloudEventsFlux
-                    .filter(cloudEvent -> cloudEvent.contains(sessionId)).map(cloudEvent -> {
-                log.info("Sending message to client [{}]: {}", sessionId, cloudEvent);
+            String msg = String.format("{\"session\":\"%s\"}", sessionId);
+            // Register the outbound flux as the source of outbound messages //.filter(cloudEvent -> cloudEvent.contains(sessionId))
+            final Flux<WebSocketMessage> outFlux = Flux.concat(Flux.just(msg), cloudEventsFlux)
+                    .map(cloudEvent -> {
+                        log.info("Sending message to client [{}]: {}", sessionId, cloudEvent);
 
-                return webSocketSession.textMessage(cloudEvent);
-            }));
+                        return webSocketSession.textMessage(cloudEvent);
+                    });
 
-            webSocketSession.receive().doAfterTerminate(() -> log.info("after terminate??"))
-                    .doOnComplete(() -> log.info("on complete??" ))
-                    .doOnError(t -> { log.info("error: " + t.getCause()); t.printStackTrace();})
-                    .doFinally(sig -> {
-                            log.info("Terminating WebSocket Session (client side) sig: [{}], [{}]", sig.name(), sessionId);
-                            webSocketSession.close();
-                            sessions.remove(sessionId);  // remove the stored session id
-                        })
-                    .subscribe(inMsg -> {
-                log.info("Received inbound message from client [{}]: {}", sessionId, inMsg.getPayloadAsText());
-            });
 
-            return webSocketSession.send(outFlux);
+            return webSocketSession.send(outFlux).and(webSocketSession.receive().doFinally(sig -> {
+                log.info("Terminating WebSocket Session (client side) sig: [{}], [{}]", sig.name(), sessionId);
+                webSocketSession.close();
+                sessions.remove(sessionId);  // remove the stored session id
+            }).map(WebSocketMessage::getPayloadAsText).log());
+
         }
-
         return Mono.empty();
+
     }
 }
 
 
 @RestController
 @RequestMapping("/api/")
-class SiteRestController{
+class SiteRestController {
 
     @Value("${version:0.0.0}")
     private String version;
@@ -155,15 +150,14 @@ class SiteRestController{
 
 
     @PostMapping("/")
-    public String pushDataViaWebSocket(@RequestHeader Map<String, String> headers, @RequestBody String body){
+    public String pushDataViaWebSocket(@RequestHeader Map<String, String> headers, @RequestBody String body) {
         CloudEvent<AttributesImpl, String> cloudEvent = CloudEventsHelper.parseFromRequest(headers, body);
-        //handler.getEmitterProcessor().onNext( sessionId + "," + UUID.randomUUID().toString());
-        handler.getEmitterProcessor().onNext( cloudEvent.toString() );
+        handler.getEmitterProcessor(headers.get("sessionId")).onNext(cloudEvent.toString());
         return "OK!";
     }
 
     @GetMapping("/sessions")
-    public Set<String> getSessions() {
+    public List<String> getSessions() {
         return handler.getSessionsId();
     }
 
@@ -191,10 +185,9 @@ class TicketsSiteController {
     private RestTemplate restTemplate = new RestTemplate();
 
 
-
     @GetMapping("/")
-    public String index(Model model,  WebSession session) {
-        session.getAttributes().putIfAbsent("sessionId", UUID.randomUUID().toString());
+    public String index(Model model, WebSession session) {
+        session.getAttributes().putIfAbsent("sessionId", randomUUID().toString());
         String sessionId = session.getAttribute("sessionId");
         ServiceInfo ticketsInfo = null;
         ServiceInfo paymentsInfo = null;
