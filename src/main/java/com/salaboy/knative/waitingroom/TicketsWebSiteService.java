@@ -234,7 +234,6 @@ class TicketsSiteController {
         model.addAttribute("payments", paymentsInfo);
         model.addAttribute("queuePosition", queuePosition);
         model.addAttribute("queueSize", queueSize);
-        model.addAttribute("externalIp", EXTERNAL_IP);
 
 
         return "index";
