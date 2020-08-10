@@ -122,7 +122,7 @@
     }
     console.log("WS URL: " + wsURL);
 
-    sock = new ReconnectingWebSocket(wsURL);
+    var sock = new ReconnectingWebSocket(wsURL);
 
     function setConnected(connected)
     {
@@ -133,6 +133,7 @@
 
     function connect()
     {
+
 
 
         sock.onopen = function() {
@@ -156,20 +157,20 @@
 
     function disconnect()
     {
-        if (ws != null) {
-            ws.close();
-            ws = null;
+        if (sock != null) {
+            sock.close();
+            sock = null;
         }
         setConnected(false);
     }
 
     function echo()
     {
-        if (ws != null)
+        if (sock != null)
         {
             var message = document.getElementById('message').value;
             log('Sent to server :: ' + message);
-            ws.send(message);
+            sock.send(message);
         } else {
             alert('connection not established, please connect.');
         }
