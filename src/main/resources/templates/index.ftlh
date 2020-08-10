@@ -83,7 +83,7 @@
         integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <script>window.jQuery || document.write('<script src="js/vendor/jquery-3.4.1reconnecting-websocket.min.js"><\/script>')</script>
 <script src="js/plugins.js"></script>
-<script defer src="js/reconnecting-websocket.min.js"></script>
+<script src="js/reconnecting-websocket.min.js"></script>
 <script type="text/javascript">
 
     function joinQueue() {
@@ -116,9 +116,9 @@
 
 
     console.log("Protocol: " + location.protocol);
-    let wsURL = "ws://" + document.location.host + "/ws";
+    let wsURL = "ws://" + document.location.host + "/ws?sessionId=${sessionId}";
     if (location.protocol === 'https:') {
-        wsURL = "wss://" + document.location.host + "/ws";
+        wsURL = "wss://" + document.location.host + "/ws?sessionId=${sessionId}";
     }
     console.log("WS URL: " + wsURL);
 
@@ -133,8 +133,6 @@
 
     function connect()
     {
-
-
 
         sock.onopen = function() {
             setConnected(true);

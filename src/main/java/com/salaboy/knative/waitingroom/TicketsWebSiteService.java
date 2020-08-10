@@ -100,6 +100,7 @@ class ReactiveWebSocketHandler implements WebSocketHandler {
     public Mono<Void> handle(WebSocketSession webSocketSession) {
         String id = webSocketSession.getId();
         log.info(">>> WebSocketSession Id: " + id);
+        log.info(">>> QUERY SESSION ID: " + webSocketSession.getHandshakeInfo().getUri().getQuery());
         String sessionId = webSocketSession.getHandshakeInfo().getUri().getQuery().split("=")[1];
         log.info(">>>  Session Id from connection: " + sessionId);
         if(sessions.get(sessionId) == null) {
@@ -116,14 +117,14 @@ class ReactiveWebSocketHandler implements WebSocketHandler {
                 return webSocketSession.textMessage(cloudEvent);
             }));
 
-            webSocketSession.receive()
-                    .doOnComplete(() -> log.info("on complete??"))
-                    .doOnError(t -> t.printStackTrace())
+            webSocketSession.receive().doAfterTerminate(() -> log.info("after terminate??"))
+                    .doOnComplete(() -> log.info("on complete??" ))
+                    .doOnError(t -> { log.info("error: " + t.getCause()); t.printStackTrace();})
                     .doFinally(sig -> {
-                log.info("Terminating WebSocket Session (client side) sig: [{}], [{}]", sig.name(), sessionId);
-                webSocketSession.close();
-                sessions.remove(sessionId);  // remove the stored session id
-            })
+                            log.info("Terminating WebSocket Session (client side) sig: [{}], [{}]", sig.name(), sessionId);
+                            webSocketSession.close();
+                            sessions.remove(sessionId);  // remove the stored session id
+                        })
                     .subscribe(inMsg -> {
                 log.info("Received inbound message from client [{}]: {}", sessionId, inMsg.getPayloadAsText());
             });
