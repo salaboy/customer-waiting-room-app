@@ -83,13 +83,20 @@ public class TicketsWebSiteService {
 @Slf4j
 class ReactiveWebSocketHandler implements WebSocketHandler {
 
-    private static final ObjectMapper json = new ObjectMapper();
     private List<String> sessions = new CopyOnWriteArrayList<>();
     private Map<String, EmitterProcessor<String>> processors = new ConcurrentHashMap<>();
 
 
+    public ReactiveWebSocketHandler() {
+        System.out.println(">>> HANDLER: " + this.hashCode());
+    }
+
     public EmitterProcessor<String> getEmitterProcessor(String id) {
         return processors.get(id);
+    }
+
+    public Set<String> getProcessors(){
+        return processors.keySet();
     }
 
     public List<String> getSessionsId() {
@@ -102,10 +109,9 @@ class ReactiveWebSocketHandler implements WebSocketHandler {
         String id = webSocketSession.getId();
 
         String sessionId = webSocketSession.getHandshakeInfo().getUri().getQuery().split("=")[1];
-
-
         if (sessions.add(sessionId)) {
-            EmitterProcessor<String> processor = processors.put(sessionId, EmitterProcessor.create());
+            System.out.println("Session Id added: " + sessionId);
+            processors.put(sessionId, EmitterProcessor.create());
             Flux<String> cloudEventsFlux = processors.get(sessionId).map(x -> "consume: " + x);
 
             // Send the session id back to the client
@@ -123,6 +129,7 @@ class ReactiveWebSocketHandler implements WebSocketHandler {
                 log.info("Terminating WebSocket Session (client side) sig: [{}], [{}]", sig.name(), sessionId);
                 webSocketSession.close();
                 sessions.remove(sessionId);  // remove the stored session id
+                processors.remove(sessionId);
             }).map(WebSocketMessage::getPayloadAsText).log());
 
         }
@@ -152,6 +159,7 @@ class SiteRestController {
     @PostMapping("/")
     public String pushDataViaWebSocket(@RequestHeader Map<String, String> headers, @RequestBody String body) {
         CloudEvent<AttributesImpl, String> cloudEvent = CloudEventsHelper.parseFromRequest(headers, body);
+        System.out.println("Getting processor for session Id: " + headers.get("sessionId"));
         handler.getEmitterProcessor(headers.get("sessionId")).onNext(cloudEvent.toString());
         return "OK!";
     }
@@ -159,6 +167,11 @@ class SiteRestController {
     @GetMapping("/sessions")
     public List<String> getSessions() {
         return handler.getSessionsId();
+    }
+
+    @GetMapping("/processors")
+    public Set<String> getProcessors() {
+        return handler.getProcessors();
     }
 
 
