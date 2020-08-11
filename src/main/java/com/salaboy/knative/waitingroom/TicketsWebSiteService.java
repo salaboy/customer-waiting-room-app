@@ -1,5 +1,6 @@
 package com.salaboy.knative.waitingroom;
 
+import io.cloudevents.jackson.JsonFormat;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -9,7 +10,8 @@ import com.salaboy.cloudevents.helper.CloudEventsHelper;
 import com.salaboy.knative.waitingroom.models.ClientSession;
 import com.salaboy.knative.waitingroom.models.ServiceInfo;
 import io.cloudevents.CloudEvent;
-import io.cloudevents.v03.AttributesImpl;
+import io.cloudevents.core.provider.EventFormatProvider;
+
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -117,7 +119,7 @@ class ReactiveWebSocketHandler implements WebSocketHandler {
         if (sessions.add(sessionId)) {
             log.info("Session Id added: " + sessionId);
             processors.put(sessionId, EmitterProcessor.create());
-            Flux<String> cloudEventsFlux = processors.get(sessionId).map(x -> "consume: " + x);
+            Flux<String> cloudEventsFlux = processors.get(sessionId).map(x -> x);
 
             // Send the session id back to the client
             String msg = String.format("{\"session\":\"%s\"}", sessionId);
@@ -165,22 +167,27 @@ class SiteRestController {
 
 
     @PostMapping("/")
-    public String pushDataViaWebSocket(@RequestHeader Map<String, String> headers, @RequestBody String body) throws JsonProcessingException {
-        CloudEvent<AttributesImpl, String> cloudEvent = CloudEventsHelper.parseFromRequest(headers, body);
-//        log.info("Getting processor for session Id: " + headers.get("Sessionid"));
-//        log.info("All HEADERS: " );
-//        for(String key : headers.keySet()){
-//            log.info(">> HEADER: " + key + " -> VALUE: " + headers.get(key));
-//        }
+    public String pushDataViaWebSocket(@RequestHeader HttpHeaders headers, @RequestBody String body) throws JsonProcessingException {
+        CloudEvent cloudEvent = CloudEventsHelper.parseFromRequest(headers.toSingleValueMap(), body);
+        log.info("Getting processor for session Id: " + headers.get("Sessionid"));
+        log.info("All HEADERS: " );
+        for(String key : headers.keySet()){
+            log.info(">> HEADER: " + key + " -> VALUE: " + headers.get(key));
+        }
 
-        String data = cloudEvent.getData().get();
+        String data = new String(cloudEvent.getData());
         log.info("RAW Cloud Event Data" + data);
         String stringVersion = objectMapper.readValue(data, String.class);
         ClientSession clientSession = objectMapper.readValue(stringVersion, ClientSession.class);
 
         log.info("Client Session from Cloud Event Data" + clientSession.getSessionId());
         log.info("Getting processor for session Id: " + clientSession.getSessionId());
-        handler.getEmitterProcessor(clientSession.getSessionId()).onNext(cloudEvent.toString());
+        byte[] serialized = EventFormatProvider
+                .getInstance()
+                .resolveFormat(JsonFormat.CONTENT_TYPE)
+                .serialize(cloudEvent);
+
+        handler.getEmitterProcessor(clientSession.getSessionId()).onNext(new String(serialized));
         return "OK!";
     }
 
@@ -267,8 +274,8 @@ class TicketsSiteController {
         return "index";
     }
 
-    @GetMapping("/backoffice")
-    public String backoffice(@RequestParam(value = "pending", required = false, defaultValue = "false") boolean pending, Model model) {
+    @GetMapping("/tickets")
+    public String tickets(@RequestParam(value = "pending", required = false, defaultValue = "false") boolean pending, Model model) {
         ServiceInfo ticketsInfo = null;
         ServiceInfo paymentsInfo = null;
 

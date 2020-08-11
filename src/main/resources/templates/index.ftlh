@@ -145,8 +145,12 @@
         };
 
         sock.onmessage = function(event) {
-            let t = JSON.parse(JSON.parse(event.data));
-            console.log(t);
+            console.log(event.data)
+            let ce = JSON.parse(event.data);
+            console.log(ce);
+            if(ce["type"] === "Queue.CustomerExited"){
+                //window.location.href = "/tickets?sessionId";
+            }
         };
 
         sock.onerror = function(event){
