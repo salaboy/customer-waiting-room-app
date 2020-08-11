@@ -90,9 +90,11 @@
     function joinQueue() {
         var xhr = new XMLHttpRequest();
         xhr.open("POST", "/router/message", true);
-        var data = JSON.stringify({
+        var data = JSON.stringify(
+            {
             sessionId: "${sessionId}",
-        });
+            }
+        );
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.setRequestHeader('Ce-Id', 'CE-'+ "${sessionId}");
         xhr.setRequestHeader('Ce-Type', 'NewCustomer');
@@ -106,7 +108,7 @@
         }
 
         console.log(data);
-        xhr.send(data);
+        xhr.send(JSON.stringify(data)); // Double stringify escape double quotes that are needed
 
         connect();
     }
