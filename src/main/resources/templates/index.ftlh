@@ -107,7 +107,7 @@
             }
         }
 
-        console.log(data);
+        console.log(JSON.stringify(data));
         xhr.send(JSON.stringify(data)); // Double stringify escape double quotes that are needed
 
         connect();
