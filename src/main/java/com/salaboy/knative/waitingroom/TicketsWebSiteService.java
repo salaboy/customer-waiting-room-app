@@ -1,25 +1,21 @@
 package com.salaboy.knative.waitingroom;
 
-import io.cloudevents.jackson.JsonFormat;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.salaboy.cloudevents.helper.CloudEventsHelper;
 import com.salaboy.knative.waitingroom.models.ClientSession;
 import com.salaboy.knative.waitingroom.models.ServiceInfo;
 import io.cloudevents.CloudEvent;
 import io.cloudevents.core.provider.EventFormatProvider;
-
-
+import io.cloudevents.jackson.JsonFormat;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.*;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -38,10 +34,13 @@ import org.springframework.web.server.WebSession;
 import reactor.core.publisher.EmitterProcessor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import java.util.*;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
-
 
 import static java.util.UUID.randomUUID;
 
@@ -275,29 +274,12 @@ class TicketsSiteController {
     }
 
     @GetMapping("/tickets")
-    public String tickets(@RequestParam(value = "pending", required = false, defaultValue = "false") boolean pending, Model model) {
-        ServiceInfo ticketsInfo = null;
-        ServiceInfo paymentsInfo = null;
-
-        try {
-            ResponseEntity<ServiceInfo> tickets = restTemplate.getForEntity(TICKETS_SERVICE + "/info", ServiceInfo.class);
-            ticketsInfo = tickets.getBody();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        try {
-            ResponseEntity<ServiceInfo> payments = restTemplate.getForEntity(PAYMENTS_SERVICE + "/info", ServiceInfo.class);
-            paymentsInfo = payments.getBody();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public String tickets(@RequestParam(value = "sessionId", required = true) String sessionId, Model model) {
 
         model.addAttribute("version", version);
-        model.addAttribute("tickets", ticketsInfo);
-        model.addAttribute("payments", paymentsInfo);
+        model.addAttribute("sessionId", sessionId);
 
-        return "backoffice";
+        return "tickets";
     }
 
 

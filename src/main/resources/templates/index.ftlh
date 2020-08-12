@@ -35,9 +35,7 @@
         </h1>
     </div>
     <div class="header__options">
-<#--        <a href="/backoffice">-->
-<#--            Go to Back Office <span><img src="arrow_white.svg" alt=""></span>-->
-<#--        </a>-->
+
     </div>
 
 </div>
@@ -53,21 +51,7 @@
                 SESSION ID
                 <h5>${sessionId}</h5>
             </div>
-        <div id="connect-container" class="ui centered grid">
-            <div class="row">
-                <button id="connect" onclick="connect();" class="ui green button ">Connect</button>
-                <button id="disconnect" disabled="disabled" onclick="disconnect();"
-                        class="ui red button">Disconnect</button>
-            </div>
-            <div class="row">
-                <textarea id="message" style="width: 350px" class="ui input"
-                          placeholder="Message to Echo"></textarea>
-            </div>
-            <div class="row">
-                <button id="echo" onclick="echo();" disabled="disabled"
-                        class="ui button">Echo message</button>
-            </div>
-        </div>
+
         <div id="console-container">
             <h3>Logging</h3>
             <div id="logging"></div>
@@ -128,19 +112,11 @@
 
     var sock;
 
-    function setConnected(connected)
-    {
-        document.getElementById('connect').disabled = connected;
-        document.getElementById('disconnect').disabled = !connected;
-        document.getElementById('echo').disabled = !connected;
-    }
-
     function connect()
     {
 
         sock = new WebSocket(wsURL);
         sock.onopen = function() {
-            setConnected(true);
             console.log('Info: Connection Established.');
         };
 
@@ -149,7 +125,11 @@
             let ce = JSON.parse(event.data);
             console.log(ce);
             if(ce["type"] === "Queue.CustomerExited"){
-                //window.location.href = "/tickets?sessionId";
+
+                var data = JSON.parse(ce["data"]);
+                log(data.sessionId);
+
+                window.location.href = "/tickets?sessionId=data.sessionId";
             }
         };
 
@@ -158,31 +138,13 @@
         }
         sock.onclose = function(event) {
 
-            setConnected(false);
             console.log('Info: Closing Connection. -> ' + event);
         };
     }
 
-    function disconnect()
-    {
-        if (sock != null) {
-            sock.close();
-            sock = null;
-        }
-        setConnected(false);
-    }
 
-    function echo()
-    {
-        if (sock != null)
-        {
-            var message = document.getElementById('message').value;
-            log('Sent to server :: ' + message);
-            sock.send(message);
-        } else {
-            alert('connection not established, please connect.');
-        }
-    }
+
+
 
     function log(message)
     {

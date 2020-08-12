@@ -44,20 +44,9 @@
 <div class="bottom-blocks">
     <div class="main-title">
         <h2>Welcome to your Tickets Portal</h2>
-        <div id="modalContent" class="modal__content">
-            <div class="modal__content__title">
-                Select Tickets
-                <h5>
-                    <#if c4p??>
-                        <a href="https://github.com/salaboy/tickets-service/releases/tag/v${tickets.version}">${tickets.name}
-                            v${tickets.version}</a>
-                    <#else>
-                        <a href="https://github.com/salaboy/tickets-service/">
-                            N/A</a>
-                    </#if>
-                </h5>
+            SESSION ID
+            <h5>${sessionId}</h5>
 
-            </div>
             <div id="modalBody" class="modal__content__body">
                 <div class="form">
                     <div class="form-field">
@@ -79,7 +68,7 @@
                 <a onclick="buyTicket()" class="button">Buy Tickets</a>
             </div>
 
-        </div>
+
     </div>
 
 </div>
