@@ -61,11 +61,11 @@
     </div>
 </div>
 <div class="button-layer">
-    <a id="proceed" onclick="joinQueue();" class="main-button">
+    <a id="joinQueueButton" onclick="joinQueue();" class="main-button">
         Join the Queue
     </a>
     <a id="proceed" onclick="proceed();" class="main-button disabled">
-        Buy Tickets: <span class="position" id="queuePositionButton">X</span> people left
+        Buy Tickets: <span id="queuePositionButton">X people left</span>
     </a>
 </div>
 
@@ -106,6 +106,8 @@
         xhr.send(JSON.stringify(data)); // Double stringify escape double quotes that are needed
 
         connect();
+
+        document.getElementById('joinQueueButton').className = "main-button disabled";
     }
 
     function callback(response) {
@@ -121,7 +123,12 @@
             var position = document.getElementById('queuePosition');
             position.innerHTML = response.position;
             var positionButton = document.getElementById('queuePositionButton');
-            positionButton.innerHTML = response.position - 1;
+
+            if(response.position > 1){
+                positionButton.innerHTML = response.position - 1 + "people left";
+            }else{
+                positionButton.innerHTML = "";
+            }
 
             var queueSize = document.getElementById('queueSize');
             queueSize.innerHTML = response.size;
