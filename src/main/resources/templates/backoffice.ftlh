@@ -43,137 +43,20 @@
 </div>
 <div class="bottom-blocks">
     <div class="main-title">
-        <h2>Received Proposals</h2>
-        <h5>
-        <#if c4p??>
-            <a href="https://github.com/salaboy/fmtok8s-c4p/releases/tag/v${c4p.version}">${c4p.name}
-                    v${c4p.version}</a>
-        <#else>
-            <a href="https://github.com/salaboy/fmtok8s-c4p/">N/A</a>
-        </#if>
-            </h5>
-    </div>
-    <div class="options">
-        <input type="checkbox" id="pending-check" name="pending-check" onchange="togglePending()" ${pending}>
-        <label for="pending-check"> Show Only Pending</label>
-    </div>
-    <div class="agenda">
-        <div class="agenda__day">
-            <div class="agenda__day__info">
-
-            </div>
-            <div class="agenda__day__content">
-                <#if proposals?? && proposals?has_content>
-                    <ul class="item-list">
-
-                        <#list proposals as proposal>
-                            <#if proposal.status?? && proposal.status == "DECIDED">
-                                <#if proposal.approved>
-                                    <li class="approved">
-                                <#else>
-                                    <li class="declined">
-                                </#if>
-                            <#else>
-                                <li class="pending">
-                            </#if>
-                            <div class="item-list__title">
-                                ${proposal.title}
-                            </div>
-                            <div class="item-list__description">
-                                ${proposal.description}
-                            </div>
-                            <div class="item-list__data">
-                                16:00 <br/>
-                                <#--
-                                                               Author: ${proposal.author}-->
-                                <#if proposal.status?? && proposal.status == "DECIDED">
-                                    <#if proposal.approved>
-                                        <div class="item-list__status__approved">
-                                            Approved
-                                        </div>
-                                    <#else>
-                                        <div class="item-list__status__declined">
-                                            Declined
-                                        </div>
-                                    </#if>
-                                </#if>
-                            </div>
-                            <#if proposal.status?? && proposal.status == "PENDING">
-                                <div class="item-list__actions">
-                                    <a class="item-list__actions__accept" onclick="approveProposal('${proposal.id}')">
-                                        Accept
-                                    </a>
-                                    <a class="item-list__actions__reject" onclick="rejectProposal('${proposal.id}')">
-                                        Reject
-                                    </a>
-                                </div>
-
-                            </#if>
-
-                            </li>
-                        </#list>
-
-                    </ul>
-                <#else>
-                    <h5> No Proposals yet.</h5>
-                </#if>
-
-            </div>
+        <h2>Operations</h2>
+        <div class="button-layer">
+            <a class="main-button" onclick="generateBatch()">
+                Generate some traffic
+            </a>
+            <a class="main-button" onclick="cleanup()">
+                Clean up sessions
+            </a>
         </div>
-
-
     </div>
+
 </div>
-<div class="button-layer">
-    <a class="main-button" onclick="toggleModal()">
-        Send Email
-    </a>
-</div>
-<div class="modal" id="modal">
-    <div class="modal__content">
-        <div class="modal__content__title">
-            Send Email
-            <h5>
-                <#if email??>
-                <a href="https://github.com/salaboy/fmtok8s-email/releases/tag/v${email.version}">${email.name}
-                    v${email.version}</a>
-                <#else>
-                    <a href="https://github.com/salaboy/fmtok8s-email/">N/A</a>
-                </#if>
-            </h5>
-            <div class="close">
-                <a onclick="toggleModal()"><img src="close.svg" alt=""></a>
-            </div>
-        </div>
-        <div id="modalBody" class="modal__content__body">
-            <div class="form">
-                <div class="form-field half">
-                    <label>To</label>
-                    <input id="toEmail" type="text">
-                </div>
-                <div class="form-field half">
-                    <label>Title</label>
-                    <input id="title" type="text">
-                </div>
-                <div class="form-field">
-                    <label>Content</label>
-                    <textarea id="content"></textarea>
-                </div>
-            </div>
-        </div>
-        <div id="modalActions" class="modal__content__action">
-            <div id="modalErrorMessage" class="modal__content__action__message">
-            </div>
-            <a onclick="sendEmail()" class="button">Send</a>
-        </div>
-        <div id="modalMessage" class="modal__content__message__hidden">
-            <h2>Email Sent.</h2>
-            <p>Your email has been sent successfully.</p>
-            <p><a onclick="toggleModal()">Continue to the backoffice</a></p>
-        </div>
-    </div>
-    <div class="modal__overlay"></div>
-</div>
+
+
 
 <script src="js/vendor/modernizr-3.7.1.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"
@@ -182,84 +65,46 @@
 <script src="js/plugins.js"></script>
 <script type="text/javascript">
 
-    function togglePending() {
-        var checked = document.getElementById("pending-check").checked;
-        console.log("Show only pending..." + checked);
-        window.location.href = "/backoffice?pending="+checked;
+    function createMyGuid()
+    {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = Math.random()*16|0, v = c === 'x' ? r : (r&0x3|0x8);
+            return v.toString(16);
+        });
     }
 
-    function sendEmail() {
-        var errorMsg = "Please complete required fields: ";
-        if (document.getElementById("title").value == "") {
-            errorMsg += "title,"
-        }
-        if (document.getElementById("toEmail").value == "") {
-            errorMsg += "toEmail,"
-        }
-        if (document.getElementById("content").value == "") {
-            errorMsg += "content,"
-        }
-        if (errorMsg == "Please complete required fields: ") {
-            console.log("sending email");
+    function generateBatch() {
+        /// curl -X POST http://customer-waiting-room-app.default.34.78.5.94.xip.io/router/message -H "Ce-Id: 123" -H "Ce-Type: NewCustomer"  -H "Ce-Source: curl" -H "Ce-Subject: hello"  -H "Content-Type: application/json" -H "correlationKey: 1" -d '"{\"sessionId\":\"1\"}"' -v
+        var amount = 10;
+        for(var i =0; i < amount; i++) {
             var xhr = new XMLHttpRequest();
-            xhr.open("POST", "/email/", true);
+            xhr.open("POST", "/router/message", true);
+            var sessionId = "mock-" + i + createMyGuid();
+            var data = JSON.stringify(
+                {
+                    sessionId: sessionId,
+                }
+            );
             xhr.setRequestHeader('Content-Type', 'application/json');
-            var data = JSON.stringify({
-                title: document.getElementById("title").value,
-                toEmail: document.getElementById("toEmail").value,
-                content: document.getElementById("content").value,
-            });
-            console.log(data);
-            xhr.send(data);
+            xhr.setRequestHeader('Ce-Id', 'CE-' + sessionId);
+            xhr.setRequestHeader('Ce-Type', 'NewCustomer');
+            xhr.setRequestHeader('Ce-Source', 'website');
+            xhr.setRequestHeader('correlationKey', sessionId);
 
 
-            document.getElementById("modalBody").className = "modal__content__body__hidden";
-            document.getElementById("modalActions").className = "modal__content__action__hidden";
-            document.getElementById("modalMessage").className = "modal__content__message";
-        }else {
-            console.log(errorMsg);
-            document.getElementById("modalErrorMessage").innerHTML = errorMsg.substr(0, errorMsg.length - 1) + ".";
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4) {
+                    callback(xhr.response);
+                }
+            }
+
+            console.log("Generated Session Id: " + sessionId);
+            xhr.send(JSON.stringify(data));
         }
     }
 
-    function approveProposal(id) {
-        console.log("approving");
-        var xhr = new XMLHttpRequest();
-        xhr.open("POST", "/c4p/" + id + "/decision", true);
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        var data = JSON.stringify({
-            "approved": true
-        });
-        console.log(data);
-        xhr.send(data);
-        window.location.href = "/backoffice";
 
-    }
-
-    function rejectProposal(id) {
-        console.log("rejecting");
-        var xhr = new XMLHttpRequest();
-        xhr.open("POST", "/c4p/" + id + "/decision", true);
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        var data = JSON.stringify({
-            "approved": false
-        });
-        console.log(data);
-        xhr.send(data);
-        window.location.href = "/backoffice";
-
-    }
-
-    function toggleModal() {
-        document.getElementById("modalBody").className = "modal__content__body";
-        document.getElementById("modalActions").className = "modal__content__action";
-        document.getElementById("modalMessage").className = "modal__content__message__hidden";
-        document.getElementById("toEmail").value = "";
-        document.getElementById("title").value = "";
-        document.getElementById("content").value = "";
-        var element = document.getElementById("modal");
-        element.classList.toggle("open");
-    }
 
 
 </script>

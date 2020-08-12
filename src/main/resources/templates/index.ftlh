@@ -18,7 +18,7 @@
     <meta name="theme-color" content="#E7E7EA">
 </head>
 
-<body data-gr-c-s-loaded="true" onload="joinQueue();">
+<body data-gr-c-s-loaded="true">
 <!--[if IE]>
 <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade
     your browser</a> to improve your experience and security.</p>
@@ -33,7 +33,9 @@
         <h1>Waiting Room Demo v0.0.0 </h1>
     </div>
     <div class="header__options">
-
+        <a href="/backoffice">
+            Back Office<span><img src="arrow.svg" alt=""></span>
+        </a>
     </div>
 
 </div>
@@ -44,124 +46,69 @@
     </div>
     <div class="queue">
         <div class="queue-header">
-            <h2>You are number <span class="position" id="queuePosition">X</span> of <span  id="queueSize">X</span> people waiting.</h2>
-            <p>Your approximate waiting time is <span  id="queueWaitingTime">X</span> minutes.</p>
+            <h2>You are number <span class="position" id="queuePosition">X</span> of <span id="queueSize">X</span>
+                people waiting.</h2>
+            <p>Your approximate waiting time is <span id="queueWaitingTime">X</span> minutes.</p>
 
         </div>
         <div id="queue-list" class="queue-list">
-<#--            <div class="door"></div>-->
-<#--            <div class="person"></div>-->
-<#--            <div class="person"></div>-->
-<#--            <div class="person"></div>-->
-<#--            <div class="person"></div>-->
-<#--            <div class="person you"></div>-->
-<#--            <div class="person"></div>-->
-<#--            <div class="person"></div>-->
-<#--            <div class="person"></div>-->
-<#--            <div class="person"></div>-->
-<#--            <div class="person"></div>-->
-<#--            <div class="person"></div>-->
-<#--            <div class="person"></div>-->
-<#--            <div class="person"></div>-->
-<#--            <div class="person"></div>-->
-<#--            <div class="person"></div>-->
-<#--            <div class="person"></div>-->
-<#--            <div class="person"></div>-->
-<#--            <div class="person"></div>-->
-<#--            <div class="person"></div>-->
-<#--            <div class="person"></div>-->
-<#--            <div class="person"></div>-->
-<#--            <div class="person"></div>-->
-<#--            <div class="person"></div>-->
-<#--            <div class="person"></div>-->
-<#--            <div class="person"></div>-->
-<#--            <div class="person"></div>-->
-<#--            <div class="person"></div>-->
-<#--            <div class="person"></div>-->
-<#--            <div class="person"></div>-->
-<#--            <div class="person"></div>-->
-<#--            <div class="person"></div>-->
-<#--            <div class="person"></div>-->
-<#--            <div class="person"></div>-->
-<#--            <div class="person"></div>-->
-<#--            <div class="person"></div>-->
-<#--            <div class="person"></div>-->
-<#--            <div class="person"></div>-->
-<#--            <div class="person"></div>-->
-<#--            <div class="person"></div>-->
-<#--            <div class="person"></div>-->
-<#--            <div class="person"></div>-->
-<#--            <div class="person"></div>-->
-<#--            <div class="person"></div>-->
-<#--            <div class="person"></div>-->
-<#--            <div class="person"></div>-->
-<#--            <div class="person"></div>-->
-<#--            <div class="person"></div>-->
-<#--            <div class="person"></div>-->
-<#--            <div class="person"></div>-->
-<#--            <div class="person"></div>-->
-<#--            <div class="person"></div>-->
-<#--            <div class="person"></div>-->
-<#--            <div class="person"></div>-->
-<#--            <div class="person"></div>-->
-<#--            <div class="person"></div>-->
-<#--            <div class="person"></div>-->
-<#--            <div class="person"></div>-->
-<#--            <div class="person"></div>-->
-<#--            <div class="person"></div>-->
-<#--            <div class="person"></div>-->
-<#--            <div class="person"></div>-->
+            <#--            <div class="door"></div>-->
+            <#--            <div class="person"></div>-->
+            <#--            <div class="person you"></div>-->
+
 
         </div>
     </div>
 </div>
 <div class="button-layer">
-    <a id="proceed" class="main-button disabled" >
-        Buy Tickets: 5 people left
+    <a id="proceed" onclick="joinQueue();" class="main-button">
+        Join the Queue
+    </a>
+    <a id="proceed" onclick="proceed();" class="main-button disabled">
+        Buy Tickets: <span class="position" id="queuePositionButton">X</span> people left
     </a>
 </div>
 
 
-
-
 <script src="js/vendor/modernizr-3.7.1.min.js"></script>
-<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <script>window.jQuery || document.write('<script src="js/vendor/jquery-3.4.1.min.js"><\/script>')</script>
 <script src="js/plugins.js"></script>
 <script type="text/javascript">
 
-        function joinQueue() {
+    function joinQueue() {
 
-            document.getElementById('proceed').disabled = true;
+        document.getElementById('proceed').disabled = true;
 
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST", "/router/message", true);
-            var data = JSON.stringify(
-                {
-                    sessionId: "${sessionId}",
-                }
-            );
-            xhr.setRequestHeader('Content-Type', 'application/json');
-            xhr.setRequestHeader('Ce-Id', 'CE-'+ "${sessionId}");
-            xhr.setRequestHeader('Ce-Type', 'NewCustomer');
-            xhr.setRequestHeader('Ce-Source', 'website');
-            xhr.setRequestHeader('correlationKey',  "${sessionId}");
-
-            /// curl -X POST http://customer-waiting-room-app.default.34.78.5.94.xip.io/router/message -H "Ce-Id: 123" -H "Ce-Type: NewCustomer"  -H "Ce-Source: curl" -H "Ce-Subject: hello"  -H "Content-Type: application/json" -H "correlationKey: 1" -d '"{\"sessionId\":\"1\"}"' -v
-
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === 4) {
-                    callback(xhr.response);
-                }
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "/router/message", true);
+        var data = JSON.stringify(
+            {
+                sessionId: "${sessionId}",
             }
+        );
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.setRequestHeader('Ce-Id', 'CE-' + "${sessionId}");
+        xhr.setRequestHeader('Ce-Type', 'NewCustomer');
+        xhr.setRequestHeader('Ce-Source', 'website');
+        xhr.setRequestHeader('correlationKey', "${sessionId}");
 
-            console.log(JSON.stringify(data));
-            xhr.send(JSON.stringify(data)); // Double stringify escape double quotes that are needed
+        /// curl -X POST http://customer-waiting-room-app.default.34.78.5.94.xip.io/router/message -H "Ce-Id: 123" -H "Ce-Type: NewCustomer"  -H "Ce-Source: curl" -H "Ce-Subject: hello"  -H "Content-Type: application/json" -H "correlationKey: 1" -d '"{\"sessionId\":\"1\"}"' -v
 
-            connect();
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                callback(xhr.response);
+            }
         }
 
-    function callback(response){
+        console.log(JSON.stringify(data));
+        xhr.send(JSON.stringify(data)); // Double stringify escape double quotes that are needed
+
+        connect();
+    }
+
+    function callback(response) {
         console.log(response);
     }
 
@@ -173,6 +120,9 @@
 
             var position = document.getElementById('queuePosition');
             position.innerHTML = response.position;
+            var positionButton = document.getElementById('queuePositionButton');
+            positionButton.innerHTML = response.position - 1;
+
             var queueSize = document.getElementById('queueSize');
             queueSize.innerHTML = response.size;
             var queueWaitingTime = document.getElementById('queueWaitingTime');
@@ -182,11 +132,11 @@
             var door = document.createElement("div");
             door.className = "door";
             queueList.appendChild(door);
-            for(var i = 1; i < response.size + 1; i++) {
+            for (var i = 1; i < response.size + 1; i++) {
                 var newDiv = document.createElement("div");
-                if(i == response.position) {
+                if (i == response.position) {
                     newDiv.className = "person you";
-                }else{
+                } else {
                     newDiv.className = "person";
                 }
                 queueList.appendChild(newDiv);
@@ -209,19 +159,18 @@
 
     var sessionId;
 
-    function connect()
-    {
+    function connect() {
 
         sock = new WebSocket(wsURL);
-        sock.onopen = function() {
+        sock.onopen = function () {
             console.log('Info: Connection Established.');
         };
 
-        sock.onmessage = function(event) {
+        sock.onmessage = function (event) {
             console.log(event.data)
             let ce = JSON.parse(event.data);
             console.log(ce);
-            if(ce["type"] === "Queue.CustomerExited"){
+            if (ce["type"] === "Queue.CustomerExited") {
 
                 var data = JSON.parse(ce["data"]);
                 sessionId = data.sessionId;
@@ -231,21 +180,20 @@
             }
         };
 
-        sock.onerror = function(event){
+        sock.onerror = function (event) {
             console.log("EFFOR: " + event);
         }
-        sock.onclose = function(event) {
+        sock.onclose = function (event) {
 
             console.log('Info: Closing Connection. -> ' + event);
         };
     }
 
-    function proceed(){
-        window.location.href = "/tickets?sessionId="+sessionId;
+    function proceed() {
+        window.location.href = "/tickets?sessionId=" + sessionId;
     }
 
-    function log(message)
-    {
+    function log(message) {
         var console = document.getElementById('logging');
         var p = document.createElement('p');
         p.appendChild(document.createTextNode(message));

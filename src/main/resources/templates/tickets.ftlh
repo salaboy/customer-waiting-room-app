@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html class="no-js" lang="">
 
@@ -27,101 +28,64 @@
 <!-- Add your site or application content here -->
 <div class="block header">
     <div class="header__image">
-        <img src="kubecon-logo.png" height="50px">
+        <img src="img/kubecon-logo.png" width="35">
     </div>
     <div class="header__title">
-        <h1><span><a
-                        href="https://github.com/salaboy/customer-waiting-room-app/releases/tag/v${version}">Waiting Room Demo v${version}</a></span>
-        </h1>
+        <h1>Waiting Room Demo v0.0.0 </h1>
     </div>
     <div class="header__options">
-<#--        <a href="/backoffice">-->
-<#--            Go to Back Office <span><img src="arrow_white.svg" alt=""></span>-->
-<#--        </a>-->
+
     </div>
 
 </div>
 <div class="bottom-blocks">
     <div class="main-title">
-        <h2>Welcome to your Tickets Portal</h2>
-            SESSION ID
-            <h5>${sessionId}</h5>
-
-            <div id="modalBody" class="modal__content__body">
-                <div class="form">
-                    <div class="form-field">
-                        <label>Type</label>
-                        <input id="type" type="text">
-                    </div>
-                    <div class="form-field">
-                        <label>Quantity</label>
-                        <input id="quantity" type="text">
-                    </div>
-
-
-                </div>
-            </div>
-            <div id="modalActions" class="modal__content__action">
-                <div id="modalErrorMessage" class="modal__content__action__message">
-
-                </div>
-                <a onclick="buyTicket()" class="button">Buy Tickets</a>
-            </div>
-
+        <h3>Welcome to your Tickets Portal</h3>
 
     </div>
+    <div class="queue">
+        <div class="queue-header">
+            <h2>Purchase your tickets.</h2>
+            <p>Your buying ID is ${sessionId}</p>
 
+        </div>
+        <div class="queue-form">
+            <form class="form" action="">
+                <div class="form-field">
+                    <label>Type</label>
+                    <input type="text">
+                </div>
+                <div class="form-field small">
+                    <label>Quantity</label>
+                    <input type="number">
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+<div class="button-layer">
+    <a class="main-button " >
+        Buy Tickets
+    </a>
 </div>
 
+
+
 <script src="js/vendor/modernizr-3.7.1.min.js"></script>
-<script src="https://code.jquery.com/jquery-3.4.1.min.js"
-        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
-<script>window.jQuery || document.write('<script src="js/vendor/jquery-3.4.1reconnecting-websocket.min.js"><\/script>')</script>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<script>window.jQuery || document.write('<script src="js/vendor/jquery-3.4.1.min.js"><\/script>')</script>
 <script src="js/plugins.js"></script>
+<script src="js/main.js"></script>
 <script type="text/javascript">
-
-
-
-
-    function buyTicket() {
-        var xhr = new XMLHttpRequest();
-        xhr.open("POST", "/tickets/");
-        var errorMsg = "Please complete required fields: ";
-        // if (document.getElementById("author").value == "") {
-        //     errorMsg += "author,"
-        // }
-        // if (document.getElementById("email").value == "") {
-        //     errorMsg += "email,"
-        // }
-        // if (document.getElementById("title").value == "") {
-        //     errorMsg += "title,"
-        // }
-        // if (document.getElementById("description").value == "") {
-        //     errorMsg += "description,"
-        // }
-
-        if (errorMsg == "Please complete required fields: ") {
-            var data = JSON.stringify({
-                quantity: document.getElementById("quantity").value,
-                type: document.getElementById("type").value,
-
-            });
-            xhr.setRequestHeader('Content-Type', 'application/json');
-            console.log(data);
-            xhr.send(data);
-
-            // document.getElementById("modalBody").className = "modal__content__body__hidden";
-            // document.getElementById("modalActions").className = "modal__content__action__hidden";
-            // document.getElementById("modalMessage").className = "modal__content__message";
-
-        } else {
-            console.log(errorMsg);
-            document.getElementById("modalErrorMessage").innerHTML = errorMsg.substr(0, errorMsg.length - 1) + ".";
-        }
-    }
-
+ function buyTickets(){
+     console.log("buy tickets clicked! ")
+ }
 
 </script>
+
+
 
 
 </body>

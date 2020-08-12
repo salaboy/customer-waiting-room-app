@@ -268,6 +268,14 @@ class TicketsSiteController {
         return "tickets";
     }
 
+    @GetMapping("/backoffice")
+    public String backoffice(Model model) {
+
+        model.addAttribute("version", version);
+
+        return "backoffice";
+    }
+
 
 }
 
