@@ -104,15 +104,17 @@
         console.log(response);
     }
 
-    (function pollService() {
-        $.getJSON("/queue/${sessionId}", function (response) {
-            // ... Do something with the response
+    setInterval(pollService, 3000);
+
+    function pollService() {
+        $.get("/queue/${sessionId}", function (response) {
             console.log(">> My position is: " + response);
             var position = document.getElementById('queuePosition');
             position.innerHTML = response;
-            setInterval(pollService, 3000);
+        }).fail(function (jqxhr, textStatus, error) {
+            console.log(textStatus + " -> " + error);
         });
-    }());
+    }
 
 
 
