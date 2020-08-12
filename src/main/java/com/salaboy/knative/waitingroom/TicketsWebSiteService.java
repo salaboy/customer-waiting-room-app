@@ -231,8 +231,7 @@ class TicketsSiteController {
         String sessionId = session.getAttribute("sessionId");
         ServiceInfo ticketsInfo = null;
         ServiceInfo paymentsInfo = null;
-        int queuePosition = -1;
-        int queueSize = -1;
+
 
         try {
             ResponseEntity<ServiceInfo> tickets = restTemplate.getForEntity(TICKETS_SERVICE + "/info", ServiceInfo.class);
@@ -248,26 +247,13 @@ class TicketsSiteController {
             e.printStackTrace();
         }
 
-        try {
-            ResponseEntity<String> queueSizeRequest = restTemplate.getForEntity(QUEUE_SERVICE + "/", String.class);
-            queueSize = Integer.valueOf(queueSizeRequest.getBody().toString());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
-        try {
-            ResponseEntity<String> queuePositionRequest = restTemplate.getForEntity(QUEUE_SERVICE + "/" + sessionId, String.class);
-            queuePosition = Integer.valueOf(queuePositionRequest.getBody().toString());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
         model.addAttribute("version", version);
         model.addAttribute("sessionId", sessionId);
         model.addAttribute("tickets", ticketsInfo);
         model.addAttribute("payments", paymentsInfo);
-        model.addAttribute("queuePosition", queuePosition);
-        model.addAttribute("queueSize", queueSize);
+
 
 
         return "index";

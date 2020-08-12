@@ -44,10 +44,8 @@
         <h2>Welcome to your Tickets Portal</h2>
 
             <div class="modal__content__title">
-                QUEUE SIZE
-                <h5>${queueSize}</h5>
                 QUEUE POSITION
-                <h5>${queuePosition}</h5>
+                <h5 id="queuePosition">Joining the queue...</h5>
                 SESSION ID
                 <h5>${sessionId}</h5>
             </div>
@@ -56,6 +54,8 @@
             <h3>Logging</h3>
             <div id="logging"></div>
         </div>
+
+        <button onclick="proceed()" id="proceed" class="button">Proceed</button>
 
         </div>
     </div>
@@ -72,6 +72,9 @@
 <script type="text/javascript">
 
     function joinQueue() {
+
+        document.getElementById('proceed').disabled = true;
+
         var xhr = new XMLHttpRequest();
         xhr.open("POST", "/router/message", true);
         var data = JSON.stringify(
@@ -101,6 +104,18 @@
         console.log(response);
     }
 
+    (function pollService() {
+        $.getJSON("/queue/${sessionId}", function (response) {
+            // ... Do something with the response
+            console.log(">> My position is: " + response);
+            var position = document.getElementById('queuePosition');
+            position.innerHTML = response;
+            setInterval(pollService, 3000);
+        });
+    }());
+
+
+
 
 
     console.log("Protocol: " + location.protocol);
@@ -111,6 +126,8 @@
     console.log("WS URL: " + wsURL);
 
     var sock;
+
+    var sessionId;
 
     function connect()
     {
@@ -127,9 +144,10 @@
             if(ce["type"] === "Queue.CustomerExited"){
 
                 var data = JSON.parse(ce["data"]);
-                log(data.sessionId);
+                sessionId = data.sessionId;
 
-                window.location.href = "/tickets?sessionId="+data.sessionId;
+                document.getElementById('proceed').disabled = false;
+
             }
         };
 
@@ -140,6 +158,10 @@
 
             console.log('Info: Closing Connection. -> ' + event);
         };
+    }
+
+    function proceed(){
+        window.location.href = "/tickets?sessionId="+sessionId;
     }
 
 
