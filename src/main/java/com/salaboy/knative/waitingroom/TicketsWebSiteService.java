@@ -177,8 +177,8 @@ class SiteRestController {
 
         String data = new String(cloudEvent.getData());
         log.info("RAW Cloud Event Data" + data);
-
-        ClientSession clientSession = objectMapper.readValue(data, ClientSession.class);
+        String stringVersion = objectMapper.readValue(data, String.class);
+        ClientSession clientSession = objectMapper.readValue(stringVersion, ClientSession.class);
 
         log.info("Client Session from Cloud Event Data" + clientSession.getSessionId());
         log.info("Getting processor for session Id: " + clientSession.getSessionId());
