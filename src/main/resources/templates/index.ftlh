@@ -129,7 +129,7 @@
                 var data = JSON.parse(ce["data"]);
                 log(data.sessionId);
 
-                window.location.href = "/tickets?sessionId=data.sessionId";
+                window.location.href = "/tickets?sessionId="+data.sessionId;
             }
         };
 
