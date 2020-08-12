@@ -48,6 +48,10 @@
             <a class="main-button" onclick="generateBatch()">
                 Generate some traffic
             </a>
+            <div id="sessions">
+                <h5>Generated Sessions</h5>
+
+            </div>
             <a class="main-button" onclick="cleanup()">
                 Clean up sessions
             </a>
@@ -101,7 +105,21 @@
 
             console.log("Generated Session Id: " + sessionId);
             xhr.send(JSON.stringify(data));
+
+            var sessionDiv = document.getElementById("sessions");
+            var p = document.createElement("p");
+            p.innerHTML = sessionId;
+            sessionDiv.appendChild(p);
         }
+    }
+
+    function callback(response) {
+        console.log(response);
+    }
+
+    function cleanup(){
+
+
     }
 
 
