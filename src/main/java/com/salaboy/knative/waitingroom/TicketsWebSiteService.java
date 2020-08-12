@@ -181,12 +181,16 @@ class SiteRestController {
 
         log.info("Client Session from Cloud Event Data" + clientSession.getSessionId());
         log.info("Getting processor for session Id: " + clientSession.getSessionId());
-        byte[] serialized = EventFormatProvider
-                .getInstance()
-                .resolveFormat(JsonFormat.CONTENT_TYPE)
-                .serialize(cloudEvent);
+        if(!clientSession.getSessionId().contains("mock")) {
+            byte[] serialized = EventFormatProvider
+                    .getInstance()
+                    .resolveFormat(JsonFormat.CONTENT_TYPE)
+                    .serialize(cloudEvent);
 
-        handler.getEmitterProcessor(clientSession.getSessionId()).onNext(new String(serialized));
+            handler.getEmitterProcessor(clientSession.getSessionId()).onNext(new String(serialized));
+        }else{
+            log.info("session id contained mock, not sending to websocket: " + clientSession.getSessionId());
+        }
         return "OK!";
     }
 
