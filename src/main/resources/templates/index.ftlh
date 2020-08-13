@@ -64,6 +64,9 @@
     <a id="joinQueueButton" onclick="joinQueue();" class="main-button">
         Join the Queue
     </a>
+    <a id="quitQueueButton" onclick="quitQueue();" class="main-button disabled">
+        Quit the Queue
+    </a>
     <a id="proceed" onclick="proceed();" class="main-button disabled">
         Buy Tickets: <span id="queuePositionButton">X people left</span>
     </a>
@@ -77,9 +80,16 @@
 <script src="js/plugins.js"></script>
 <script type="text/javascript">
 
+    document.getElementById('proceed').disabled = true;
+
+    function quitQueue(){
+        document.getElementById('quitQueueButton').className = "main-button disabled";
+        document.getElementById('joinQueueButton').className = "main-button";
+    }
+
     function joinQueue() {
 
-        document.getElementById('proceed').disabled = true;
+
 
         var xhr = new XMLHttpRequest();
         xhr.open("POST", "/router/message", true);
@@ -108,6 +118,7 @@
         connect();
 
         document.getElementById('joinQueueButton').className = "main-button disabled";
+        document.getElementById('quitQueueButton').className = "main-button";
     }
 
     function callback(response) {
@@ -121,11 +132,15 @@
             console.log(">> My position is: " + JSON.stringify(response));
 
             var position = document.getElementById('queuePosition');
-            position.innerHTML = response.position;
+            if(response.position > 0 ){
+                position.innerHTML = response.position;
+            }else{
+                position.innerHTML = "X";
+            }
             var positionButton = document.getElementById('queuePositionButton');
 
             if(response.position > 1){
-                positionButton.innerHTML = response.position - 1 + "people left";
+                positionButton.innerHTML = response.position - 1 + " people left";
             }else{
                 positionButton.innerHTML = "";
             }
@@ -139,7 +154,7 @@
             var door = document.createElement("div");
             door.className = "door";
             queueList.appendChild(door);
-            for (var i = 1; i < response.size + 1; i++) {
+            for (var i = 0; i < response.size ; i++) {
                 var newDiv = document.createElement("div");
                 if (i == response.position) {
                     newDiv.className = "person you";
@@ -199,6 +214,8 @@
     function proceed() {
         window.location.href = "/tickets?sessionId=" + sessionId;
     }
+
+
 
     function log(message) {
         var console = document.getElementById('logging');
