@@ -273,8 +273,11 @@ class TicketsSiteController {
     }
 
     @GetMapping("/backoffice")
-    public String backoffice(Model model) {
+    public String backoffice( WebSession session, @RequestParam(value="reset", required = false, defaultValue = "false") boolean reset, Model model) {
 
+        if(reset){
+            session.getAttributes().put("sessionId", randomUUID().toString());
+        }
         model.addAttribute("version", version);
 
         return "backoffice";

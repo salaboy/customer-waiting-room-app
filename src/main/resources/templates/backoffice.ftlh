@@ -55,6 +55,10 @@
             <a class="main-button" onclick="cleanup()">
                 Clean up sessions
             </a>
+
+            <a class="main-button" onclick="reset()">
+                Reset local session
+            </a>
         </div>
     </div>
 
@@ -119,6 +123,11 @@
 
     function cleanup(){
 
+
+    }
+
+    function reset(){
+        window.location.href = "/backoffice?reset=true";
 
     }
 
