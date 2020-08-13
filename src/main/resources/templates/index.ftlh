@@ -45,16 +45,21 @@
 
     </div>
     <div class="queue">
-        <div class="queue-header">
-            <h2>You are number <span class="position" id="queuePosition">X</span> of <span id="queueSize">X</span>
-                people waiting.</h2>
-            <p>Your approximate waiting time is <span id="queueWaitingTime">X</span> minutes.</p>
 
+
+        <div class="queue-header">
+            <h2 id="queueTitle">Join the queue to buy your tickets.</h2>
+<#--            <h2>It's your turn!</h2>-->
+<#--            <h2>You are number <span class="position" id="queuePosition">X</span> of <span id="queueSize">X</span>-->
+<#--                people waiting.</h2>-->
+            <p id="waitingLabel">There are currently <span id="queueSize">X</span> people waiting. Your approximate waiting time is <span id="queueWaitingTime">X</span> minutes.</p>
+
+<#--            <p>Buy your tickets when you are ready.</p>-->
         </div>
+
+
         <div id="queue-list" class="queue-list">
-            <#--            <div class="door"></div>-->
-            <#--            <div class="person"></div>-->
-            <#--            <div class="person you"></div>-->
+
 
 
         </div>
@@ -68,7 +73,7 @@
         Quit the Queue
     </a>
     <a id="proceed" onclick="proceed();" class="main-button disabled">
-        Buy Tickets: <span id="queuePositionButton">X people left</span>
+        Buy Tickets
     </a>
 </div>
 
@@ -96,6 +101,8 @@
         var data = JSON.stringify(
             {
                 sessionId: "${sessionId}",
+                ticketsType: "",
+                ticketsQuantity: "0"
             }
         );
         xhr.setRequestHeader('Content-Type', 'application/json');
@@ -131,19 +138,20 @@
         $.getJSON("/queue/${sessionId}", function (response) {
             console.log(">> My position is: " + JSON.stringify(response));
 
-            var position = document.getElementById('queuePosition');
-            if(response.position > 0 ){
-                position.innerHTML = response.position;
-            }else{
-                position.innerHTML = "X";
-            }
-            var positionButton = document.getElementById('queuePositionButton');
 
-            if(response.position > 1){
-                positionButton.innerHTML = response.position - 1 + " people left";
+            var queueList = document.getElementById('queue-list');
+            var queueTitle = document.getElementById('queueTitle');
+            var queueWaitingLabel = document.getElementById('queueWaitingLabel');
+
+            if(response.position >= 0 ){
+                queueTitle.innerHTML = "You are number <span class=\"position\" id=\"queuePosition\">" + response.position + "</span> of <span id=\"queueSize\">" + response.size + "</span>people waiting.";
+                queueList.className = "queue-list";
             }else{
-                positionButton.innerHTML = "";
+
+                queueList.className = "queue-list-hidden";
+                queueTitle.innerHTML = "Join the queue to buy your tickets.";
             }
+
 
             var queueSize = document.getElementById('queueSize');
             queueSize.innerHTML = response.size;

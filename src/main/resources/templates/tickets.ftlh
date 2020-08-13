@@ -53,11 +53,11 @@
             <form class="form" action="">
                 <div class="form-field">
                     <label>Type</label>
-                    <input type="text">
+                    <input type="text" id="ticketsType">
                 </div>
                 <div class="form-field small">
                     <label>Quantity</label>
-                    <input type="number">
+                    <input type="number" id="ticketsQuantity">
                 </div>
 
             </form>
@@ -66,7 +66,7 @@
     </div>
 </div>
 <div class="button-layer">
-    <a class="main-button " >
+    <a class="main-button " onclick="buyTickets()" >
         Buy Tickets
     </a>
 </div>
@@ -77,10 +77,40 @@
 <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <script>window.jQuery || document.write('<script src="js/vendor/jquery-3.4.1.min.js"><\/script>')</script>
 <script src="js/plugins.js"></script>
-<script src="js/main.js"></script>
+
 <script type="text/javascript">
  function buyTickets(){
-     console.log("buy tickets clicked! ")
+     console.log("buy tickets clicked! ");
+
+     var ticketsType = document.getElementById("ticketsType").value;
+     var ticketsQuantity = document.getElementById("ticketsQuantity").value;
+     var xhr = new XMLHttpRequest();
+     xhr.open("POST", "/router/message", true);
+     var data = JSON.stringify(
+         {
+             sessionId: "${sessionId}",
+             ticketsType: ticketsType,
+             ticketsQuantity: ticketsQuantity
+         }
+     );
+     xhr.setRequestHeader('Content-Type', 'application/json');
+     xhr.setRequestHeader('Ce-Id', 'CE-' + "${sessionId}");
+     xhr.setRequestHeader('Ce-Type', 'Tickets.Requested ');
+     xhr.setRequestHeader('Ce-Source', 'website');
+     xhr.setRequestHeader('correlationKey', "${sessionId}");
+
+     /// curl -X POST http://customer-waiting-room-app.default.34.78.5.94.xip.io/router/message -H "Ce-Id: 123" -H "Ce-Type: NewCustomer"  -H "Ce-Source: curl" -H "Ce-Subject: hello"  -H "Content-Type: application/json" -H "correlationKey: 1" -d '"{\"sessionId\":\"1\"}"' -v
+
+     xhr.onreadystatechange = function () {
+         if (xhr.readyState === 4) {
+             callback(xhr.response);
+         }
+     }
+
+     xhr.send(JSON.stringify(data));
+ }
+ function callback(response) {
+    console.log(response);
  }
 
 </script>
