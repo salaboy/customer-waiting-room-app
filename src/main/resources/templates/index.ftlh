@@ -104,7 +104,8 @@
             {
                 sessionId: "${sessionId}",
                 ticketsType: "",
-                ticketsQuantity: "0"
+                ticketsQuantity: "0",
+                reservationId: ""
             }
         );
         xhr.setRequestHeader('Content-Type', 'application/json');

@@ -116,8 +116,9 @@
  }
  function callback(response) {
     console.log(response);
-
-    window.location.href = "/pay?sessionId=${sessionId}&reservationId="+response;
+    var data = JSON.parse(response);
+    console.log(data);
+    window.location.href = "/pay?sessionId=${sessionId}&reservationId="+data.reservationId;
  }
 
 </script>
