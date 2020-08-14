@@ -45,34 +45,29 @@
     </div>
     <div class="queue">
         <div class="queue-header">
-            <h2>Purchase your tickets.</h2>
+            <h2>Your tickets are reserved. Please pay:</h2>
             <p>Your buying ID is ${sessionId}</p>
 
         </div>
         <div class="queue-form">
             <form class="form" action="">
-
-                <div class="form-field half">
-                    <label>Type</label>
-                    <select  name="ticketsType" id="ticketsType">
-                        <option value="standing">Standing</option>
-                        <option value="balcony 1">Balcony Left</option>
-                        <option value="balcony 2">Balcony Right</option>
-                        <option value="far away">Far Away</option>
-                    </select>
-                </div>
                 <div class="form-field small">
-                    <label>Quantity</label>
-                    <input type="number" id="ticketsQuantity">
+                    <label>Credit Card Information</label>
+                    <input type="number" id="creditCard">
                 </div>
+
             </form>
 
+        </div>
+
+        <div>
+            <span id="paymentStatus"> Please Pay ... </span>
         </div>
     </div>
 </div>
 <div class="button-layer">
-    <a class="main-button" onclick="reserveTickets()">
-        Reserve Tickets
+    <a class="main-button " onclick="payTickets()" >
+        Pay
     </a>
 </div>
 
@@ -84,25 +79,26 @@
 <script src="js/plugins.js"></script>
 
 <script type="text/javascript">
- function reserveTickets(){
-     console.log("buy tickets clicked! ");
+ function payTickets(){
+     document.getElementById("paymentStatus").innerHTML="Payment request sent";
+     console.log("pay tickets clicked! ");
 
-     var ticketsType = document.getElementById("ticketsType").value;
-     var ticketsQuantity = document.getElementById("ticketsQuantity").value;
+     var cc = document.getElementById("creditCard").value;
+
      var xhr = new XMLHttpRequest();
-     xhr.open("POST", "/tickets/reserve", true);
+     xhr.open("POST", "/tickets/checkout", true);
      var data = JSON.stringify(
          {
              sessionId: "${sessionId}",
-             ticketsType: ticketsType,
-             ticketsQuantity: ticketsQuantity
+             reservationId: "${reservationId}",
+             cc: cc
          }
      );
      xhr.setRequestHeader('Content-Type', 'application/json');
      xhr.setRequestHeader('Ce-Id', 'CE-' + "${sessionId}");
-     xhr.setRequestHeader('Ce-Type', 'Tickets.Reserved ');
+     xhr.setRequestHeader('Ce-Type', 'Tickets.PaymentRequested');
      xhr.setRequestHeader('Ce-Source', 'website');
-     xhr.setRequestHeader('correlationKey', "${sessionId}");
+     xhr.setRequestHeader('correlationKey', "${reservationId}");
 
      /// curl -X POST http://customer-waiting-room-app.default.34.78.5.94.xip.io/router/message -H "Ce-Id: 123" -H "Ce-Type: NewCustomer"  -H "Ce-Source: curl" -H "Ce-Subject: hello"  -H "Content-Type: application/json" -H "correlationKey: 1" -d '"{\"sessionId\":\"1\"}"' -v
 
@@ -113,11 +109,74 @@
      }
 
      xhr.send(JSON.stringify(data));
+
+
+     xhr = new XMLHttpRequest();
+     xhr.open("POST", "/router/message", true);
+
+     xhr.setRequestHeader('Content-Type', 'application/json');
+     xhr.setRequestHeader('Ce-Id', 'CE-' + "${sessionId}");
+     xhr.setRequestHeader('Ce-Type', 'Tickets.PaymentRequested');
+     xhr.setRequestHeader('Ce-Source', 'website');
+     xhr.setRequestHeader('correlationKey', "${reservationId}");
+
+     /// curl -X POST http://customer-waiting-room-app.default.34.78.5.94.xip.io/router/message -H "Ce-Id: 123" -H "Ce-Type: NewCustomer"  -H "Ce-Source: curl" -H "Ce-Subject: hello"  -H "Content-Type: application/json" -H "correlationKey: 1" -d '"{\"sessionId\":\"1\"}"' -v
+
+     xhr.onreadystatechange = function () {
+         if (xhr.readyState === 4) {
+             callback(xhr.response);
+         }
+     }
+
+     xhr.send(JSON.stringify(data));
+
  }
  function callback(response) {
     console.log(response);
+    console.log("payment request received!!!");
+     document.getElementById("paymentStatus").innerHTML="Payment request recieved";
+    connect();
+ }
 
-    window.location.href = "/pay?sessionId=${sessionId}&reservationId="+response;
+ var sessionId;
+
+ console.log("Protocol: " + location.protocol);
+ let wsURL = "ws://" + document.location.host + "/ws?sessionId=${sessionId}";
+ if (location.protocol === 'https:') {
+     wsURL = "wss://" + document.location.host + "/ws?sessionId=${sessionId}";
+ }
+ console.log("WS URL: " + wsURL);
+
+ var sock;
+
+ function connect() {
+
+     sock = new WebSocket(wsURL);
+     sock.onopen = function () {
+         console.log('Info: Connection Established.');
+     };
+
+     sock.onmessage = function (event) {
+         console.log(event.data)
+         let ce = JSON.parse(event.data);
+         console.log(ce);
+         if (ce["type"] === "Tickets.PaymentsAuthorized") {
+
+             var data = JSON.parse(ce["data"]);
+             console.log(data);
+             document.getElementById("paymentStatus").innerHTML="Payment Authorized!";
+
+
+         }
+     };
+
+     sock.onerror = function (event) {
+         console.log("EFFOR: " + event);
+     }
+     sock.onclose = function (event) {
+
+         console.log('Info: Closing Connection. -> ' + event);
+     };
  }
 
 </script>

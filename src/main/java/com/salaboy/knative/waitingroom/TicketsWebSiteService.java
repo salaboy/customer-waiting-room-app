@@ -263,6 +263,18 @@ class TicketsSiteController {
         return "index";
     }
 
+    @GetMapping("/pay")
+    public String pay(@RequestParam(value = "sessionId", required = true) String sessionId,
+                      @RequestParam(value = "reservationId", required = true) String reservationId,
+                      Model model) {
+
+        model.addAttribute("version", version);
+        model.addAttribute("sessionId", sessionId);
+        model.addAttribute("reservationId", reservationId);
+
+        return "pay";
+    }
+
     @GetMapping("/tickets")
     public String tickets(@RequestParam(value = "sessionId", required = true) String sessionId, Model model) {
 

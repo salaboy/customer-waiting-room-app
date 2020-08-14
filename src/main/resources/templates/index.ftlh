@@ -87,6 +87,8 @@
 
     document.getElementById('proceed').disabled = true;
 
+    var connected = false;
+
     function quitQueue(){
         document.getElementById('quitQueueButton').className = "main-button disabled";
         document.getElementById('joinQueueButton').className = "main-button";
@@ -107,7 +109,7 @@
         );
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.setRequestHeader('Ce-Id', 'CE-' + "${sessionId}");
-        xhr.setRequestHeader('Ce-Type', 'NewCustomer');
+        xhr.setRequestHeader('Ce-Type', 'Queue.CustomerJoined');
         xhr.setRequestHeader('Ce-Source', 'website');
         xhr.setRequestHeader('correlationKey', "${sessionId}");
 
@@ -119,8 +121,34 @@
             }
         }
 
-        console.log(JSON.stringify(data));
+        console.log("Sending Cloud Event to Router: "  + JSON.stringify(data));
         xhr.send(JSON.stringify(data)); // Double stringify escape double quotes that are needed
+
+        xhr = new XMLHttpRequest();
+        xhr.open("POST", "/queue/join", true);
+        data = JSON.stringify(
+            {
+                sessionId: "${sessionId}",
+                ticketsType: "",
+                ticketsQuantity: "0"
+            }
+        );
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.setRequestHeader('Ce-Id', 'CE-' + "${sessionId}");
+        xhr.setRequestHeader('Ce-Type', 'Queue.CustomerJoined');
+        xhr.setRequestHeader('Ce-Source', 'website');
+        xhr.setRequestHeader('correlationKey', "${sessionId}");
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                callback(xhr.response);
+            }
+        }
+
+        console.log("Sending Cloud Event to Queue: "  + JSON.stringify(data));
+        xhr.send(JSON.stringify(data)); // Double stringify escape double quotes that are needed
+
+
 
         connect();
 
@@ -132,49 +160,51 @@
         console.log(response);
     }
 
-    setInterval(pollService, 3000);
+
 
     function pollService() {
-        $.getJSON("/queue/${sessionId}", function (response) {
-            console.log(">> My position is: " + JSON.stringify(response));
+        if(connected) {
+            $.getJSON("/queue/${sessionId}", function (response) {
+                console.log(">> My position is: " + JSON.stringify(response));
 
 
-            var queueList = document.getElementById('queue-list');
-            var queueTitle = document.getElementById('queueTitle');
-            var queueWaitingLabel = document.getElementById('queueWaitingLabel');
+                var queueList = document.getElementById('queue-list');
+                var queueTitle = document.getElementById('queueTitle');
+                var queueWaitingLabel = document.getElementById('queueWaitingLabel');
 
-            if(response.position >= 0 ){
-                queueTitle.innerHTML = "You are number <span class=\"position\" id=\"queuePosition\">" + response.position + "</span> of <span id=\"queueSize\">" + response.size + "</span>people waiting.";
-                queueList.className = "queue-list";
-            }else{
-
-                queueList.className = "queue-list-hidden";
-                queueTitle.innerHTML = "Join the queue to buy your tickets.";
-            }
-
-
-            var queueSize = document.getElementById('queueSize');
-            queueSize.innerHTML = response.size;
-            var queueWaitingTime = document.getElementById('queueWaitingTime');
-            queueWaitingTime.innerHTML = response.waitTime;
-            var queueList = document.getElementById('queue-list');
-            queueList.innerHTML = "";
-            var door = document.createElement("div");
-            door.className = "door";
-            queueList.appendChild(door);
-            for (var i = 0; i < response.size ; i++) {
-                var newDiv = document.createElement("div");
-                if (i == response.position) {
-                    newDiv.className = "person you";
+                if (response.position >= 0) {
+                    queueTitle.innerHTML = "You are number <span class=\"position\" id=\"queuePosition\">" + response.position + "</span> of <span id=\"queueSize\">" + response.size + "</span>people waiting.";
+                    queueList.className = "queue-list";
                 } else {
-                    newDiv.className = "person";
-                }
-                queueList.appendChild(newDiv);
-            }
 
-        }).fail(function (jqxhr, textStatus, error) {
-            console.log(textStatus + " -> " + error);
-        });
+                    queueList.className = "queue-list-hidden";
+                    queueTitle.innerHTML = "Join the queue to buy your tickets.";
+                }
+
+
+                var queueSize = document.getElementById('queueSize');
+                queueSize.innerHTML = response.size;
+                var queueWaitingTime = document.getElementById('queueWaitingTime');
+                queueWaitingTime.innerHTML = response.waitTime;
+                var queueList = document.getElementById('queue-list');
+                queueList.innerHTML = "";
+                var door = document.createElement("div");
+                door.className = "door";
+                queueList.appendChild(door);
+                for (var i = 0; i < response.size; i++) {
+                    var newDiv = document.createElement("div");
+                    if (i == response.position) {
+                        newDiv.className = "person you";
+                    } else {
+                        newDiv.className = "person";
+                    }
+                    queueList.appendChild(newDiv);
+                }
+
+            }).fail(function (jqxhr, textStatus, error) {
+                console.log(textStatus + " -> " + error);
+            });
+        }
     }
 
 
@@ -214,10 +244,15 @@
             console.log("EFFOR: " + event);
         }
         sock.onclose = function (event) {
-
+            connected = false;
             console.log('Info: Closing Connection. -> ' + event);
         };
+        connected = true;
+        setInterval(pollService, 3000);
+
     }
+
+
 
     function proceed() {
         window.location.href = "/tickets?sessionId=" + sessionId;
