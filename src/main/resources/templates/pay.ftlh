@@ -91,7 +91,7 @@
     function payTickets() {
         document.getElementById("paymentStatus").innerHTML = "Payment request sent";
         console.log("pay tickets clicked! ");
-        document.getElementById("paymentFrame").src="http://${paymentsService}/?sessionId=${sessionId}&reservationId=${reservationId}"
+        document.getElementById("paymentFrame").src="${paymentsServiceExternal}/?sessionId=${sessionId}&reservationId=${reservationId}"
         //document.getElementById("paymentFrame").src = "http://localhost:8083/?sessionId=${sessionId}&reservationId=${reservationId}"
         var cc = document.getElementById("creditCard").value;
 

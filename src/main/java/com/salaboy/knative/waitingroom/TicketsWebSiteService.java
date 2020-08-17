@@ -216,8 +216,8 @@ class TicketsSiteController {
     @Value("${TICKETS_SERVICE:http://tickets-service}")
     private String TICKETS_SERVICE;
 
-    @Value("${PAYMENTS_SERVICE:http://payments-service.default.34.78.5.94.xip.io }") //it needs to be the public IP here.. 
-    private String PAYMENTS_SERVICE;
+    @Value("${PAYMENTS_SERVICE_EXTERNAL:http://payments-service.default.34.78.5.94.xip.io }") //it needs to be the public IP here..
+    private String PAYMENTS_SERVICE_EXTERNAL;
 
 
     private RestTemplate restTemplate = new RestTemplate();
@@ -239,7 +239,7 @@ class TicketsSiteController {
             e.printStackTrace();
         }
         try {
-            ResponseEntity<ServiceInfo> payments = restTemplate.getForEntity(PAYMENTS_SERVICE + "/info", ServiceInfo.class);
+            ResponseEntity<ServiceInfo> payments = restTemplate.getForEntity(PAYMENTS_SERVICE_EXTERNAL + "/info", ServiceInfo.class);
             paymentsInfo = payments.getBody();
         } catch (Exception e) {
             e.printStackTrace();
@@ -265,7 +265,7 @@ class TicketsSiteController {
         model.addAttribute("version", version);
         model.addAttribute("sessionId", sessionId);
         model.addAttribute("reservationId", reservationId);
-        model.addAttribute("paymentsService", PAYMENTS_SERVICE);
+        model.addAttribute("paymentsServiceExternal", PAYMENTS_SERVICE_EXTERNAL);
 
         return "pay";
     }
