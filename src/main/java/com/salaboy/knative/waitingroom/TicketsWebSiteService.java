@@ -216,7 +216,7 @@ class TicketsSiteController {
     @Value("${TICKETS_SERVICE:http://tickets-service}")
     private String TICKETS_SERVICE;
 
-    @Value("${PAYMENTS_SERVICE_EXTERNAL:http://payments-service.default.34.78.5.94.xip.io }") //it needs to be the public IP here..
+    @Value("${PAYMENTS_SERVICE_EXTERNAL:http://payments-service.default.34.78.5.94.xip.io}") //it needs to be the public IP here..
     private String PAYMENTS_SERVICE_EXTERNAL;
 
 

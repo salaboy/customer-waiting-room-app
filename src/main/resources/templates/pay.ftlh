@@ -91,8 +91,7 @@
     function payTickets() {
         document.getElementById("paymentStatus").innerHTML = "Payment request sent";
         console.log("pay tickets clicked! ");
-        document.getElementById("paymentFrame").src="${paymentsServiceExternal}/?sessionId=${sessionId}&reservationId=${reservationId}"
-        //document.getElementById("paymentFrame").src = "http://localhost:8083/?sessionId=${sessionId}&reservationId=${reservationId}"
+
         var cc = document.getElementById("creditCard").value;
 
         var xhr = new XMLHttpRequest();
@@ -114,7 +113,7 @@
 
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4) {
-                callback(xhr.response);
+                callback1(xhr.response);
             }
         }
 
@@ -134,7 +133,7 @@
 
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4) {
-                callback(xhr.response);
+                callback2(xhr.response);
             }
         }
 
@@ -142,11 +141,17 @@
 
     }
 
-    function callback(response) {
+    function callback1(response) {
         console.log(response);
         console.log("payment request received!!!");
         document.getElementById("paymentStatus").innerHTML = "Payment request received";
+        document.getElementById("paymentFrame").src="${paymentsServiceExternal}/?sessionId=${sessionId}&reservationId=${reservationId}"
+        //document.getElementById("paymentFrame").src = "http://localhost:8083/?sessionId=${sessionId}&reservationId=${reservationId}"
         connect();
+    }
+
+    function callback2(response) {
+        console.log(response);
     }
 
     var sessionId;
