@@ -216,12 +216,9 @@ class TicketsSiteController {
     @Value("${TICKETS_SERVICE:http://tickets-service}")
     private String TICKETS_SERVICE;
 
-    @Value("${PAYMENTS_SERVICE:http://payments-service}")
+    @Value("${PAYMENTS_SERVICE:http://payments-service.default.34.78.5.94.xip.io }") //it needs to be the public IP here.. 
     private String PAYMENTS_SERVICE;
 
-
-    @Value("${QUEUE_SERVICE:http://queue-service}")
-    private String QUEUE_SERVICE;
 
     private RestTemplate restTemplate = new RestTemplate();
 
@@ -268,6 +265,7 @@ class TicketsSiteController {
         model.addAttribute("version", version);
         model.addAttribute("sessionId", sessionId);
         model.addAttribute("reservationId", reservationId);
+        model.addAttribute("paymentsService", PAYMENTS_SERVICE);
 
         return "pay";
     }
