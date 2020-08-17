@@ -49,17 +49,17 @@
 
         <div class="queue-header">
             <h2 id="queueTitle">Join the queue to buy your tickets.</h2>
-<#--            <h2>It's your turn!</h2>-->
-<#--            <h2>You are number <span class="position" id="queuePosition">X</span> of <span id="queueSize">X</span>-->
-<#--                people waiting.</h2>-->
-            <p id="waitingLabel">There are currently <span id="queueSize">X</span> people waiting. Your approximate waiting time is <span id="queueWaitingTime">X</span> minutes.</p>
-
-<#--            <p>Buy your tickets when you are ready.</p>-->
+            <#--            <h2>It's your turn!</h2>-->
+            <#--            <h2>You are number <span class="position" id="queuePosition">X</span> of <span id="queueSize">X</span>-->
+            <#--                people waiting.</h2>-->
+            <p id="waitingLabel">There are currently <span id="queueSize">X</span> people waiting. Your approximate
+                waiting time will be <span id="queueWaitingTime">X</span> minutes.</p>
+            <p id="sessionIdLabel"></p>
+            <#--            <p>Buy your tickets when you are ready.</p>-->
         </div>
 
 
         <div id="queue-list" class="queue-list">
-
 
 
         </div>
@@ -89,15 +89,60 @@
 
     var connected = false;
 
-    function quitQueue(){
+    function quitQueue() {
+        var queueList = document.getElementById('queue-list');
         document.getElementById('quitQueueButton').className = "main-button disabled";
         document.getElementById('joinQueueButton').className = "main-button";
+        document.getElementById('queueTitle').innerHTML = "Join the queue to buy your tickets."
+        document.getElementById('waitingLabel').innerHTML = "There are currently <span id=\"queueSize\">X</span> people waiting. Your approximate waiting time will be <span id=\"queueWaitingTime\">X</span> minutes.";
+        queueList.className = "queue-list-hidden";
+        console.log("Abandoning queue for session: " + sessionId);
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "/router/message", true);
+        var data = JSON.stringify(
+            {
+                sessionId:  "${sessionId}",
+            }
+        );
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.setRequestHeader('Ce-Id', 'CE-' +  "${sessionId}");
+        xhr.setRequestHeader('Ce-Type', 'Queue.CustomerAbandoned');
+        xhr.setRequestHeader('Ce-Source', 'website');
+        xhr.setRequestHeader('correlationKey',  "${sessionId}");
+
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                callback(xhr.response);
+            }
+        }
+
+        console.log("Sending Cloud Event to Router: " + JSON.stringify(data));
+        xhr.send(JSON.stringify(data));
+
+        xhr = new XMLHttpRequest();
+        xhr.open("POST", "/queue/abandon", true);
+
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.setRequestHeader('Ce-Id', 'CE-' +  "${sessionId}");
+        xhr.setRequestHeader('Ce-Type', 'Queue.CustomerAbandoned');
+        xhr.setRequestHeader('Ce-Source', 'website');
+        xhr.setRequestHeader('correlationKey',  "${sessionId}");
+
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                callback(xhr.response);
+            }
+        }
+
+        console.log("Sending Cloud Event to Router: " + JSON.stringify(data));
+        xhr.send(JSON.stringify(data));
     }
 
     function joinQueue() {
 
-
-
+        document.getElementById("sessionIdLabel").innerHTML = "${sessionId}";
         var xhr = new XMLHttpRequest();
         xhr.open("POST", "/router/message", true);
         var data = JSON.stringify(
@@ -114,7 +159,7 @@
         xhr.setRequestHeader('Ce-Source', 'website');
         xhr.setRequestHeader('correlationKey', "${sessionId}");
 
-        /// curl -X POST http://customer-waiting-room-app.default.34.78.5.94.xip.io/router/message -H "Ce-Id: 123" -H "Ce-Type: NewCustomer"  -H "Ce-Source: curl" -H "Ce-Subject: hello"  -H "Content-Type: application/json" -H "correlationKey: 1" -d '"{\"sessionId\":\"1\"}"' -v
+        /// curl -X POST http://customer-waiting-room-app.default.34.78.5.94.xip.io/router/message -H "Ce-Id: 123" -H "Ce-Type: Queue.CustomerJoined    "  -H "Ce-Source: curl" -H "Ce-Subject: hello"  -H "Content-Type: application/json" -H "correlationKey: 1" -d '"{\"sessionId\":\"1\"}"' -v
 
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4) {
@@ -122,18 +167,12 @@
             }
         }
 
-        console.log("Sending Cloud Event to Router: "  + JSON.stringify(data));
+        console.log("Sending Cloud Event to Router: " + JSON.stringify(data));
         xhr.send(JSON.stringify(data)); // Double stringify escape double quotes that are needed
 
         xhr = new XMLHttpRequest();
         xhr.open("POST", "/queue/join", true);
-        data = JSON.stringify(
-            {
-                sessionId: "${sessionId}",
-                ticketsType: "",
-                ticketsQuantity: "0"
-            }
-        );
+
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.setRequestHeader('Ce-Id', 'CE-' + "${sessionId}");
         xhr.setRequestHeader('Ce-Type', 'Queue.CustomerJoined');
@@ -146,9 +185,8 @@
             }
         }
 
-        console.log("Sending Cloud Event to Queue: "  + JSON.stringify(data));
+        console.log("Sending Cloud Event to Queue: " + JSON.stringify(data));
         xhr.send(JSON.stringify(data)); // Double stringify escape double quotes that are needed
-
 
 
         connect();
@@ -161,51 +199,52 @@
         console.log(response);
     }
 
-
+    setInterval(pollService, 3000);
 
     function pollService() {
-        if(connected) {
-            $.getJSON("/queue/${sessionId}", function (response) {
-                console.log(">> My position is: " + JSON.stringify(response));
+
+        $.getJSON("/queue/${sessionId}", function (response) {
+            console.log(">> My position is: " + JSON.stringify(response));
 
 
-                var queueList = document.getElementById('queue-list');
-                var queueTitle = document.getElementById('queueTitle');
-                var queueWaitingLabel = document.getElementById('queueWaitingLabel');
+            var queueList = document.getElementById('queue-list');
+            var queueTitle = document.getElementById('queueTitle');
+            var waitingLabel = document.getElementById('waitingLabel');
+            if (response.position >= 0) {
+                queueTitle.innerHTML = "You are in the Queue";
+                waitingLabel.innerHTML = "You are number <span class=\"position\" id=\"queuePosition\">" + (response.position + 1) + "</span> of <span id=\"queueSize\">" + response.size + "</span> people waiting. Your approximate " +
+                    "                waiting time is <span id=\"queueWaitingTime\">X</span> minutes.";
+                queueList.className = "queue-list";
+            } else {
 
-                if (response.position >= 0) {
-                    queueTitle.innerHTML = "You are number <span class=\"position\" id=\"queuePosition\">" + response.position + "</span> of <span id=\"queueSize\">" + response.size + "</span>people waiting.";
-                    queueList.className = "queue-list";
+                queueList.className = "queue-list-hidden";
+                queueTitle.innerHTML = "Join the queue to buy your tickets.";
+            }
+
+
+            var queueSize = document.getElementById('queueSize');
+            queueSize.innerHTML = response.size;
+            var queueWaitingTime = document.getElementById('queueWaitingTime');
+            queueWaitingTime.innerHTML = response.waitTime;
+            var queueList = document.getElementById('queue-list');
+            queueList.innerHTML = "";
+            var door = document.createElement("div");
+            door.className = "door";
+            queueList.appendChild(door);
+            for (var i = 0; i < response.size; i++) {
+                var newDiv = document.createElement("div");
+                if (i == response.position) {
+                    newDiv.className = "person you";
                 } else {
-
-                    queueList.className = "queue-list-hidden";
-                    queueTitle.innerHTML = "Join the queue to buy your tickets.";
+                    newDiv.className = "person";
                 }
+                queueList.appendChild(newDiv);
+            }
 
+        }).fail(function (jqxhr, textStatus, error) {
+            console.log(textStatus + " -> " + error);
+        });
 
-                var queueSize = document.getElementById('queueSize');
-                queueSize.innerHTML = response.size;
-                var queueWaitingTime = document.getElementById('queueWaitingTime');
-                queueWaitingTime.innerHTML = response.waitTime;
-                var queueList = document.getElementById('queue-list');
-                queueList.innerHTML = "";
-                var door = document.createElement("div");
-                door.className = "door";
-                queueList.appendChild(door);
-                for (var i = 0; i < response.size; i++) {
-                    var newDiv = document.createElement("div");
-                    if (i == response.position) {
-                        newDiv.className = "person you";
-                    } else {
-                        newDiv.className = "person";
-                    }
-                    queueList.appendChild(newDiv);
-                }
-
-            }).fail(function (jqxhr, textStatus, error) {
-                console.log(textStatus + " -> " + error);
-            });
-        }
     }
 
 
@@ -249,16 +288,14 @@
             console.log('Info: Closing Connection. -> ' + event);
         };
         connected = true;
-        setInterval(pollService, 3000);
+
 
     }
-
 
 
     function proceed() {
         window.location.href = "/tickets?sessionId=" + sessionId;
     }
-
 
 
     function log(message) {
