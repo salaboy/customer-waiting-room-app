@@ -35,10 +35,7 @@ import reactor.core.publisher.EmitterProcessor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -273,6 +270,19 @@ class TicketsSiteController {
         model.addAttribute("reservationId", reservationId);
 
         return "pay";
+    }
+
+    @GetMapping("/yourtickets")
+    public String yourTickets(@RequestParam(value = "sessionId", required = true) String sessionId,
+                      @RequestParam(value = "reservationId", required = true) String reservationId,
+                      Model model) {
+
+        model.addAttribute("version", version);
+        model.addAttribute("sessionId", sessionId);
+        model.addAttribute("reservationId", reservationId);
+        model.addAttribute("ticketsCode", UUID.randomUUID().toString());
+
+        return "yourtickets";
     }
 
     @GetMapping("/tickets")
