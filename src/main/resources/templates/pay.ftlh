@@ -113,7 +113,7 @@
 
         xhr.onreadystatechange = function () {
             if (xhr.status === 200) {
-                callback1(xhr.response);
+                callback2(xhr.response);
             }
         }
 
@@ -133,7 +133,7 @@
 
         xhr.onreadystatechange = function () {
             if (xhr.status === 200) {
-                callback2(xhr.response);
+                callback1(xhr.response);
             }
         }
 
