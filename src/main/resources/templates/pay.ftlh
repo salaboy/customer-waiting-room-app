@@ -145,7 +145,9 @@
         console.log(response);
         console.log("payment request received!!!");
         document.getElementById("paymentStatus").innerHTML = "Payment request received";
-        document.getElementById("paymentFrame").src="${paymentsServiceExternal}/?sessionId=${sessionId}&reservationId=${reservationId}"
+        document.getElementById("paymentFrame").src="${paymentsServiceExternal}/?sessionId=${sessionId}&reservationId=${reservationId}";
+        document.getElementById("paymentFrame").width="600";
+        document.getElementById("paymentFrame").height="600";
         //document.getElementById("paymentFrame").src = "http://localhost:8083/?sessionId=${sessionId}&reservationId=${reservationId}"
         connect();
     }
