@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.salaboy.knative</groupId>
     <artifactId>customer-waiting-room-app</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.56</version>
     <name>Knative Example :: Customer Waiting Room App</name>
     <description>KNative Example :: Customer Waiting Room App</description>
 
