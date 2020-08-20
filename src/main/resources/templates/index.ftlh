@@ -69,11 +69,11 @@
     <a id="joinQueueButton" onclick="joinQueue();" class="main-button">
         Join the Queue
     </a>
-    <a id="quitQueueButton" onclick="quitQueue();" class="main-button disabled">
+    <a id="quitQueueButton" onclick="quitQueue();" class="main-button hidden">
         Quit the Queue
     </a>
-    <a id="proceed" onclick="proceed();" class="main-button disabled">
-        Buy Tickets
+    <a id="proceed" onclick="proceed();" class="main-button hidden">
+        Reserve Tickets
     </a>
 </div>
 
@@ -90,8 +90,9 @@
     var connected = false;
 
     function quitQueue() {
+        document.getElementById("sessionIdLabel").innerHTML = "";
         var queueList = document.getElementById('queue-list');
-        document.getElementById('quitQueueButton').className = "main-button disabled";
+        document.getElementById('quitQueueButton').className = "main-button hidden";
         document.getElementById('joinQueueButton').className = "main-button";
         document.getElementById('queueTitle').innerHTML = "Join the queue to buy your tickets."
         document.getElementById('waitingLabel').innerHTML = "There are currently <span id=\"queueSize\">X</span> people waiting. Your approximate waiting time will be <span id=\"queueWaitingTime\">X</span> minutes.";
@@ -191,7 +192,7 @@
 
         connect();
 
-        document.getElementById('joinQueueButton').className = "main-button disabled";
+        document.getElementById('joinQueueButton').className = "main-button hidden";
         document.getElementById('quitQueueButton').className = "main-button";
     }
 
@@ -204,21 +205,26 @@
     function pollService() {
 
         $.getJSON("/queue/${sessionId}", function (response) {
-            console.log(">> My position is: " + JSON.stringify(response));
-
-
+            console.log("Response Data: "  + JSON.stringify(response));
+            var positionInQueue = JSON.parse(JSON.stringify(response));
+            console.log(">> My position is: " + positionInQueue.position);
+            console.log(">> My Queue Size is: " + positionInQueue.size);
+            console.log(">> My wait time  is: " + positionInQueue.waitTime);
             var queueList = document.getElementById('queue-list');
             var queueTitle = document.getElementById('queueTitle');
             var waitingLabel = document.getElementById('waitingLabel');
-            if (response.position >= 0) {
+            if (positionInQueue.position >= 0) {
                 queueTitle.innerHTML = "You are in the Queue";
                 waitingLabel.innerHTML = "You are number <span class=\"position\" id=\"queuePosition\">" + (response.position + 1) + "</span> of <span id=\"queueSize\">" + response.size + "</span> people waiting. Your approximate " +
                     "                waiting time is <span id=\"queueWaitingTime\">X</span> minutes.";
                 queueList.className = "queue-list";
-            } else {
+            } else if(!readyToBuy){
 
                 queueList.className = "queue-list-hidden";
                 queueTitle.innerHTML = "Join the queue to buy your tickets.";
+            }else{
+                queueList.className = "queue-list-hidden";
+                queueTitle.innerHTML = "Press Reserve to reserve your tickets now!";
             }
 
 
@@ -259,6 +265,8 @@
 
     var sessionId;
 
+    var readyToBuy = false;
+
     function connect() {
 
         sock = new WebSocket(wsURL);
@@ -274,7 +282,13 @@
 
                 var data = JSON.parse(ce["data"]);
                 sessionId = data.sessionId;
-
+                readyToBuy = true;
+                var queueList = document.getElementById('queue-list');
+                var queueTitle = document.getElementById('queueTitle');
+                var waitingLabel = document.getElementById('waitingLabel');
+                queueList.className = "queue-list-hidden";
+                queueTitle.innerHTML = "Reserve your tickets now!";
+                waitingLabel.innerHTML = "";
                 document.getElementById('proceed').className = "main-button";
 
             }

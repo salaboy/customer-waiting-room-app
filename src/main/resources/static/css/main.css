@@ -145,6 +145,10 @@ h5 {
   border: 2px solid var(--main-color);
 }
 
+.button-layer .main-button.hidden {
+  display: none;
+}
+
 .button-layer .main-button.disabled {
   background-color: var(--gray-color);
 }
