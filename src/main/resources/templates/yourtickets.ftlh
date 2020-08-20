@@ -55,12 +55,11 @@
 
 
                 </div>
+                <p>Your buying ID is ${sessionId}</p>
+                <p>Your reservation ID is ${reservationId}</p>
                 <div class="ticket-info">
                     <h4>May 14, 2021 </h4>
                     <h4>VIP Tickets: ${ticketsCode} </h4>
-                    <p>Your buying ID is ${sessionId}</p>
-                    <p>Your reservation ID is ${reservationId}</p>
-
                 </div>
             </div>
         </div>
