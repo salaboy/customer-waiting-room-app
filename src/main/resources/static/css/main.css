@@ -583,6 +583,9 @@ body.backoffice .block.header .header__options a span {
 .form {
     font-size: 0;
 }
+.form .cards img{
+    width: 180px;
+}
 .form .form-field {
     margin-bottom: 15px;
     display: inline-block;
@@ -597,8 +600,14 @@ body.backoffice .block.header .header__options a span {
 .form .form-field.small {
     max-width: 100px;
 }
+.form .form-field.xsmall {
+    max-width: 75px;
+}
 .form .form-field.half {
     width: 50%;
+}
+.form .form-field.quarter {
+    width: 22%;
 }
 .form .form-field label {
     font-size: 15px;
@@ -735,6 +744,170 @@ body.backoffice .block.header .header__options a span {
 }
 .sessions .session a:hover:before {
     opacity: 1;
+}
+
+
+/*BANK STYLES */
+.bankframe {
+    border: none;
+}
+
+.bank {
+    background-color: #FFF;
+    text-align: center;
+    padding: 30px;
+    margin: 0;
+    font-family: 'Rubik', sans-serif;
+}
+.bank .logo {
+    text-transform: uppercase;
+    font-size: 24px;
+    color: #2095D8;
+    font-style: italic;
+    font-weight: bold;
+    border-bottom: 2px solid;
+    display: inline-block;
+    margin-bottom: 20px;
+}
+.bank .copy {
+    color: #666;
+}
+.bank .copy h4{
+    margin-bottom: 6px;
+    color: #333;
+
+
+}
+
+.bank .congrats {
+    position: relative;
+    margin: 10px 0 15px;
+    background-color: #20D889;
+    display: inline-block;
+    height: 60px;
+    width: 60px;
+    border-radius: 30px;
+}
+.bank .congrats:before  {
+    width: 25px;
+    height: 15px;
+    border-bottom: 4px solid #FFF;
+    border-left: 4px solid #FFF;
+    content: '';
+    display: inline-block;
+    transform: rotate(-45deg);
+    position: absolute;
+    top: 16px;
+    left: 16px;
+}
+
+.lds-ellipsis {
+    display: inline-block;
+    position: relative;
+    width: 80px;
+    height: 80px;
+}
+.lds-ellipsis div {
+    position: absolute;
+    top: 33px;
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    background: #2095D8;
+    animation-timing-function: cubic-bezier(0, 1, 1, 0);
+}
+.lds-ellipsis div:nth-child(1) {
+    left: 8px;
+    animation: lds-ellipsis1 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(2) {
+    left: 8px;
+    animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(3) {
+    left: 32px;
+    animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(4) {
+    left: 56px;
+    animation: lds-ellipsis3 0.6s infinite;
+}
+@keyframes lds-ellipsis1 {
+    0% {
+        transform: scale(0);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+@keyframes lds-ellipsis3 {
+    0% {
+        transform: scale(1);
+    }
+    100% {
+        transform: scale(0);
+    }
+}
+@keyframes lds-ellipsis2 {
+    0% {
+        transform: translate(0, 0);
+    }
+    100% {
+        transform: translate(24px, 0);
+    }
+}
+
+/* TICKET */
+.ticket {
+    background-color: #FBEA77;
+    position: relative;
+    padding: 40px;
+}
+.ticket .ticket-header h4 {
+    margin: 0;
+    padding: 0;
+}
+
+.ticket .ticket-header h3 {
+    margin: 0;
+    padding: 0;
+    font-size: 30px;
+    text-transform: uppercase;
+
+}
+
+.ticket:before {
+    position: absolute;
+    content: '';
+    background-color: #FFF;
+    width: 30px;
+    height: 30px;
+    border-radius: 15px;
+    left: -15px;
+    top: calc(50% - 15px);
+}
+.ticket:after {
+    position: absolute;
+    content: '';
+    background-color: #FFF;
+    width: 30px;
+    height: 30px;
+    border-radius: 15px;
+    right: -15px;
+    top: calc(50% - 15px);
+}
+.ticket-info {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    text-align: right;
+    padding: 10px 20px;
+    background-color: #333;
+    color: #FBEA77;
+}
+.ticket-info h4, .ticket-info h3 {
+    padding: 0;
+    margin: 0;
 }
 
 /*

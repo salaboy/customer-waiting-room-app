@@ -45,25 +45,32 @@
     </div>
     <div class="queue">
         <div class="queue-header">
-            <h2>Your tickets are reserved. Please pay:</h2>
-            <p>Your buying ID is ${sessionId}</p>
-            <p>Your reservation ID is ${reservationId}</p>
-            <p>Your tickets ID is ${ticketsCode}</p>
-
+            <h2>🎫 Here are your tickets! </h2>
         </div>
-        <div class="queue-form">
-            <form class="form" action="">
+        <div class="queue-list">
+            <div class="ticket">
+                <div class="ticket-header">
+                    <h4>2 tickets for: </h4>
+                    <h3>Really Cool Concert </h3>
 
 
-            </form>
+                </div>
+                <div class="ticket-info">
+                    <h4>May 14, 2021 </h4>
+                    <h4>VIP Tickets: ${ticketsCode} </h4>
+                    <p>Your buying ID is ${sessionId}</p>
+                    <p>Your reservation ID is ${reservationId}</p>
 
+                </div>
+            </div>
         </div>
-
 
     </div>
 </div>
 <div class="button-layer">
-
+    <a  href="index.html" class="main-button" >
+        Download Your Tickets
+    </a>
 </div>
 
 

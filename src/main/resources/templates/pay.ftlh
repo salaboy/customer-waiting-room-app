@@ -44,29 +44,78 @@
     </div>
     <div class="queue">
         <div class="queue-header">
-            <h2>Your tickets are reserved. Please pay:</h2>
+            <h2>Purchase your tickets.</h2>
             <p>Your buying ID is ${sessionId}</p>
 
         </div>
         <div class="queue-form">
+            <iframe id="paymentFrame" src="" class="bankframe" width="0%" height="0px"></iframe>
             <form class="form" action="">
+            <div class="form-field">
+                <label>Credit Card Number</label>
+                <div class="form-field quarter">
+                    <input id="ccNumber" type="number" maxlength="4">
+                </div>
+                <div class="form-field quarter">
+                    <input type="number" maxlength="4">
+                </div>
+                <div class="form-field quarter" >
+                    <input type="number" maxlength="4">
+                </div>
+                <div class="form-field quarter">
+                    <input type="number" maxlength="4">
+                </div>
+            </div>
+            <div class="form-field half">
+                <label>Expiration Date</label>
+                <div class="form-field xsmall">
+                    <input placeholder="MM" type="number" maxlength="2" max="31" >
+                </div>
+                <div class="form-field xsmall">
+                    <input placeholder="YY" type="number" maxlength="2" max="12">
+                </div>
+            </div>
+            <div class="form-field half">
+                <label>Security Code</label>
                 <div class="form-field small">
-                    <label>Credit Card Information</label>
-                    <input type="number" id="creditCard">
+                    <input type="number" maxlength="3">
                 </div>
 
+            </div>
+            <br/>
+            <div class="form-field">
+                <div class="cards">
+                    <img src="cards.png" alt="">
+                </div>
+            </div>
             </form>
-
-        </div>
-        <iframe id="paymentFrame" src="">
-
-        </iframe>
-
-        <div>
-            <span id="paymentStatus"> Please Pay ... </span>
         </div>
     </div>
 </div>
+<#--    <div class="queue">-->
+<#--        <div class="queue-header">-->
+<#--            <h2>Your tickets are reserved. Please pay:</h2>-->
+<#--            <p>Your buying ID is ${sessionId}</p>-->
+
+<#--        </div>-->
+<#--        <div class="queue-form">-->
+<#--            <form class="form" action="">-->
+<#--                <div class="form-field small">-->
+<#--                    <label>Credit Card Information</label>-->
+<#--                    <input type="number" id="creditCard">-->
+<#--                </div>-->
+
+<#--            </form>-->
+
+<#--        </div>-->
+<#--        <iframe id="paymentFrame" src="">-->
+
+<#--        </iframe>-->
+
+<#--        <div>-->
+<#--            <span id="paymentStatus"> Please Pay ... </span>-->
+<#--        </div>-->
+<#--    </div>-->
 <div class="button-layer">
     <a id="payButton" class="main-button" onclick="payTickets()">
         Pay
@@ -89,10 +138,10 @@
     }
 
     function payTickets() {
-        document.getElementById("paymentStatus").innerHTML = "Payment request sent";
+
         console.log("pay tickets clicked! ");
 
-        var cc = document.getElementById("creditCard").value;
+        var cc = document.getElementById("ccNumber").value;
 
         var xhr = new XMLHttpRequest();
         xhr.open("POST", "/tickets/checkout", true);
@@ -144,10 +193,10 @@
     function callback1(response) {
         console.log(response);
         console.log("payment request received!!!");
-        document.getElementById("paymentStatus").innerHTML = "Payment request received";
+
         document.getElementById("paymentFrame").src="${paymentsServiceExternal}/?sessionId=${sessionId}&reservationId=${reservationId}";
-        document.getElementById("paymentFrame").width="600";
-        document.getElementById("paymentFrame").height="600";
+        document.getElementById("paymentFrame").width="100%";
+        document.getElementById("paymentFrame").height="300px";
         //document.getElementById("paymentFrame").src = "http://localhost:8083/?sessionId=${sessionId}&reservationId=${reservationId}"
         connect();
     }
@@ -182,7 +231,6 @@
 
                 var data = JSON.parse(ce["data"]);
                 console.log(data);
-                document.getElementById("paymentStatus").innerHTML = "Payment Authorized!";
                 document.getElementById("nextButton").className = "main-button";
                 document.getElementById("payButton").className = "main-button disabled";
 

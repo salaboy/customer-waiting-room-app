@@ -56,7 +56,7 @@ public class TicketsWebSiteService {
 
     @Bean
     public HandlerMapping webSocketHandlerMapping() {
-        log.info(">>> Handler mapping here.. ");
+
         Map<String, WebSocketHandler> map = new HashMap<>();
         map.put("/ws", webSocketHandler);
 
@@ -90,9 +90,7 @@ class ReactiveWebSocketHandler implements WebSocketHandler {
     private Map<String, EmitterProcessor<String>> processors = new ConcurrentHashMap<>();
 
 
-    public ReactiveWebSocketHandler() {
-        log.info(">>> HANDLER: " + this.hashCode());
-    }
+    public ReactiveWebSocketHandler() { }
 
     public EmitterProcessor<String> getEmitterProcessor(String id) {
         return processors.get(id);
@@ -164,9 +162,9 @@ class SiteRestController {
 
     @PostMapping("/")
     public String pushDataViaWebSocket(@RequestHeader HttpHeaders headers, @RequestBody String body) throws JsonProcessingException {
-        CloudEvent cloudEvent = CloudEventsHelper.parseFromRequest(headers.toSingleValueMap(), body);
+        CloudEvent cloudEvent = CloudEventsHelper.parseFromRequest(headers, body);
         log.info("Getting processor for session Id: " + headers.get("Sessionid"));
-        log.info("All HEADERS: " );
+        log.info("> All HEADERS: " );
         for(String key : headers.keySet()){
             log.info(">> HEADER: " + key + " -> VALUE: " + headers.get(key));
         }
