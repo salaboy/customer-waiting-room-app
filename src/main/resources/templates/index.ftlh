@@ -99,7 +99,7 @@
         queueList.className = "queue-list-hidden";
         console.log("Abandoning queue for session: " + sessionId);
         var xhr = new XMLHttpRequest();
-        xhr.open("POST", "/router/message", true);
+        xhr.open("POST", "/broker/", true);
         var data = JSON.stringify(
             {
                 sessionId:  "${sessionId}",
@@ -118,34 +118,101 @@
             }
         }
 
-        console.log("Sending Cloud Event to Router: " + JSON.stringify(data));
+        console.log("Sending Cloud Event to Broker: " + JSON.stringify(data));
         xhr.send(JSON.stringify(data));
+        <#--var xhr = new XMLHttpRequest();-->
+        <#--xhr.open("POST", "/router/message", true);-->
+        <#--var data = JSON.stringify(-->
+        <#--    {-->
+        <#--        sessionId:  "${sessionId}",-->
+        <#--    }-->
+        <#--);-->
+        <#--xhr.setRequestHeader('Content-Type', 'application/json');-->
+        <#--xhr.setRequestHeader('Ce-Id', 'CE-' +  "${sessionId}");-->
+        <#--xhr.setRequestHeader('Ce-Type', 'Queue.CustomerAbandoned');-->
+        <#--xhr.setRequestHeader('Ce-Source', 'website');-->
+        <#--xhr.setRequestHeader('correlationKey',  "${sessionId}");-->
 
-        xhr = new XMLHttpRequest();
-        xhr.open("POST", "/queue/abandon", true);
 
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.setRequestHeader('Ce-Id', 'CE-' +  "${sessionId}");
-        xhr.setRequestHeader('Ce-Type', 'Queue.CustomerAbandoned');
-        xhr.setRequestHeader('Ce-Source', 'website');
-        xhr.setRequestHeader('correlationKey',  "${sessionId}");
+        <#--xhr.onreadystatechange = function () {-->
+        <#--    if (xhr.readyState === 4) {-->
+        <#--        callback(xhr.response);-->
+        <#--    }-->
+        <#--}-->
+
+        <#--console.log("Sending Cloud Event to Router: " + JSON.stringify(data));-->
+        <#--xhr.send(JSON.stringify(data));-->
+
+        <#--xhr = new XMLHttpRequest();-->
+        <#--xhr.open("POST", "/queue/abandon", true);-->
+
+        <#--xhr.setRequestHeader('Content-Type', 'application/json');-->
+        <#--xhr.setRequestHeader('Ce-Id', 'CE-' +  "${sessionId}");-->
+        <#--xhr.setRequestHeader('Ce-Type', 'Queue.CustomerAbandoned');-->
+        <#--xhr.setRequestHeader('Ce-Source', 'website');-->
+        <#--xhr.setRequestHeader('correlationKey',  "${sessionId}");-->
 
 
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4) {
-                callback(xhr.response);
-            }
-        }
+        <#--xhr.onreadystatechange = function () {-->
+        <#--    if (xhr.readyState === 4) {-->
+        <#--        callback(xhr.response);-->
+        <#--    }-->
+        <#--}-->
 
-        console.log("Sending Cloud Event to Router: " + JSON.stringify(data));
-        xhr.send(JSON.stringify(data));
+        <#--console.log("Sending Cloud Event to Router: " + JSON.stringify(data));-->
+        <#--xhr.send(JSON.stringify(data));-->
     }
 
     function joinQueue() {
 
         document.getElementById("sessionIdLabel").innerHTML = "${sessionId}";
+        <#--var xhr = new XMLHttpRequest();-->
+        <#--xhr.open("POST", "/router/message", true);-->
+        <#--var data = JSON.stringify(-->
+        <#--    {-->
+        <#--        sessionId: "${sessionId}",-->
+        <#--        ticketsType: "",-->
+        <#--        ticketsQuantity: "0",-->
+        <#--        reservationId: ""-->
+        <#--    }-->
+        <#--);-->
+        <#--xhr.setRequestHeader('Content-Type', 'application/json');-->
+        <#--xhr.setRequestHeader('Ce-Id', 'CE-' + "${sessionId}");-->
+        <#--xhr.setRequestHeader('Ce-Type', 'Queue.CustomerJoined');-->
+        <#--xhr.setRequestHeader('Ce-Source', 'website');-->
+        <#--xhr.setRequestHeader('correlationKey', "${sessionId}");-->
+
+        <#--/// curl -X POST http://customer-waiting-room-app.default.34.78.5.94.xip.io/router/message -H "Ce-Id: 123" -H "Ce-Type: Queue.CustomerJoined    "  -H "Ce-Source: curl" -H "Ce-Subject: hello"  -H "Content-Type: application/json" -H "correlationKey: 1" -d '"{\"sessionId\":\"1\"}"' -v-->
+
+        <#--xhr.onreadystatechange = function () {-->
+        <#--    if (xhr.readyState === 4) {-->
+        <#--        callback(xhr.response);-->
+        <#--    }-->
+        <#--}-->
+
+        <#--console.log("Sending Cloud Event to Router: " + JSON.stringify(data));-->
+        <#--xhr.send(JSON.stringify(data)); // Double stringify escape double quotes that are needed-->
+
+        <#--xhr = new XMLHttpRequest();-->
+        <#--xhr.open("POST", "/queue/join", true);-->
+
+        <#--xhr.setRequestHeader('Content-Type', 'application/json');-->
+        <#--xhr.setRequestHeader('Ce-Id', 'CE-' + "${sessionId}");-->
+        <#--xhr.setRequestHeader('Ce-Type', 'Queue.CustomerJoined');-->
+        <#--xhr.setRequestHeader('Ce-Source', 'website');-->
+        <#--xhr.setRequestHeader('correlationKey', "${sessionId}");-->
+
+        <#--xhr.onreadystatechange = function () {-->
+        <#--    if (xhr.readyState === 4) {-->
+        <#--        callback(xhr.response);-->
+        <#--    }-->
+        <#--}-->
+
+        <#--console.log("Sending Cloud Event to Queue: " + JSON.stringify(data));-->
+        <#--xhr.send(JSON.stringify(data)); // Double stringify escape double quotes that are needed-->
+
         var xhr = new XMLHttpRequest();
-        xhr.open("POST", "/router/message", true);
+        xhr.open("POST", "/broker/", true);
         var data = JSON.stringify(
             {
                 sessionId: "${sessionId}",
@@ -168,25 +235,7 @@
             }
         }
 
-        console.log("Sending Cloud Event to Router: " + JSON.stringify(data));
-        xhr.send(JSON.stringify(data)); // Double stringify escape double quotes that are needed
-
-        xhr = new XMLHttpRequest();
-        xhr.open("POST", "/queue/join", true);
-
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.setRequestHeader('Ce-Id', 'CE-' + "${sessionId}");
-        xhr.setRequestHeader('Ce-Type', 'Queue.CustomerJoined');
-        xhr.setRequestHeader('Ce-Source', 'website');
-        xhr.setRequestHeader('correlationKey', "${sessionId}");
-
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4) {
-                callback(xhr.response);
-            }
-        }
-
-        console.log("Sending Cloud Event to Queue: " + JSON.stringify(data));
+        console.log("Sending Cloud Event to Broker: " + JSON.stringify(data));
         xhr.send(JSON.stringify(data)); // Double stringify escape double quotes that are needed
 
 

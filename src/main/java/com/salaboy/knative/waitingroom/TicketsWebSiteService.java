@@ -217,6 +217,8 @@ class TicketsSiteController {
     @Value("${PAYMENTS_SERVICE_EXTERNAL:http://payments-service.default.34.78.5.94.xip.io}") //it needs to be the public IP here..
     private String PAYMENTS_SERVICE_EXTERNAL;
 
+    @Value("${K_SINK:http://broker-ingress.knative-eventing.svc.cluster.local/default/default}") //it needs to be the public IP here..
+    private String K_SINK;
 
     private RestTemplate restTemplate = new RestTemplate();
 

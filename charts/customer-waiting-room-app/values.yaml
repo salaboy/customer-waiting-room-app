@@ -10,6 +10,7 @@ image:
 # define environment variables here as a map of key: value
 env:
   PAYMENTS_SERVICE: http://payments-service.default.svc.cluster.local
+  K_SINK: http://broker-ingress.knative-eventing.svc.cluster.local/default/default
 # enable this flag to use knative serve to deploy the app
 knativeDeploy: true
 

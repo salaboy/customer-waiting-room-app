@@ -100,7 +100,7 @@
      );
      xhr.setRequestHeader('Content-Type', 'application/json');
      xhr.setRequestHeader('Ce-Id', 'CE-' + "${sessionId}");
-     xhr.setRequestHeader('Ce-Type', 'Tickets.Reserved ');
+     xhr.setRequestHeader('Ce-Type', 'Tickets.Reserved');
      xhr.setRequestHeader('Ce-Source', 'website');
      xhr.setRequestHeader('correlationKey', "${sessionId}");
 
