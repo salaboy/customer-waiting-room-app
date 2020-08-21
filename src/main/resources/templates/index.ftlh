@@ -99,7 +99,7 @@
         queueList.className = "queue-list-hidden";
         console.log("Abandoning queue for session: " + sessionId);
         var xhr = new XMLHttpRequest();
-        xhr.open("POST", "/broker/", true);
+        xhr.open("POST", "/broker", true);
         var data = JSON.stringify(
             {
                 sessionId:  "${sessionId}",
@@ -212,7 +212,7 @@
         <#--xhr.send(JSON.stringify(data)); // Double stringify escape double quotes that are needed-->
 
         var xhr = new XMLHttpRequest();
-        xhr.open("POST", "/broker/", true);
+        xhr.open("POST", "/broker", true);
         var data = JSON.stringify(
             {
                 sessionId: "${sessionId}",
