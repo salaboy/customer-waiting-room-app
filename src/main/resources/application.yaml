@@ -1,6 +1,20 @@
+logging:
+  level:
+    reactor:
+      netty: INFO
+    org:
+      springframework:
+        cloud:
+          gateway: TRACE
+
+
 spring:
   cloud:
     gateway:
+      httpclient:
+        wiretap: true
+      httpserver:
+        wiretap: true
       routes:
       - id: router
         uri: ${CLOUD_EVENT_ROUTER:http://zeebe-cloud-events-router}
