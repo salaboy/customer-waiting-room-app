@@ -610,6 +610,9 @@ body.backoffice .block.header .header__options a span {
 .form .form-field.half {
   width: 50%;
 }
+.form .form-field.hidden {
+  display: none;
+}
 .form .form-field.quarter {
   width: 22%;
 }

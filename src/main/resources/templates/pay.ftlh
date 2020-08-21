@@ -51,43 +51,43 @@
         <div class="queue-form">
             <iframe id="paymentFrame" src="" class="bankframe" width="0%" height="0px"></iframe>
             <form class="form" action="">
-            <div class="form-field">
-                <label>Credit Card Number</label>
-                <div class="form-field quarter">
-                    <input id="ccNumber" type="number" maxlength="4">
+                <div id="ccFormFields" class="form-field">
+                    <label>Credit Card Number</label>
+                    <div class="form-field quarter">
+                        <input id="ccNumber" type="number" maxlength="4">
+                    </div>
+                    <div class="form-field quarter">
+                        <input type="number" maxlength="4">
+                    </div>
+                    <div class="form-field quarter">
+                        <input type="number" maxlength="4">
+                    </div>
+                    <div class="form-field quarter">
+                        <input type="number" maxlength="4">
+                    </div>
                 </div>
-                <div class="form-field quarter">
-                    <input type="number" maxlength="4">
+                <div id="ccFormFieldsHalf1" class="form-field half">
+                    <label>Expiration Date</label>
+                    <div class="form-field xsmall">
+                        <input placeholder="MM" type="number" maxlength="2" max="31">
+                    </div>
+                    <div class="form-field xsmall">
+                        <input placeholder="YY" type="number" maxlength="2" max="12">
+                    </div>
                 </div>
-                <div class="form-field quarter" >
-                    <input type="number" maxlength="4">
-                </div>
-                <div class="form-field quarter">
-                    <input type="number" maxlength="4">
-                </div>
-            </div>
-            <div class="form-field half">
-                <label>Expiration Date</label>
-                <div class="form-field xsmall">
-                    <input placeholder="MM" type="number" maxlength="2" max="31" >
-                </div>
-                <div class="form-field xsmall">
-                    <input placeholder="YY" type="number" maxlength="2" max="12">
-                </div>
-            </div>
-            <div class="form-field half">
-                <label>Security Code</label>
-                <div class="form-field small">
-                    <input type="number" maxlength="3">
-                </div>
+                <div id="ccFormFieldsHalf2" class="form-field half">
+                    <label>Security Code</label>
+                    <div class="form-field small">
+                        <input type="number" maxlength="3">
+                    </div>
 
-            </div>
-            <br/>
-            <div class="form-field">
-                <div class="cards">
-                    <img src="cards.png" alt="">
                 </div>
-            </div>
+                <br/>
+                <div id="ccFormFields2" class="form-field">
+                    <div class="cards">
+                        <img src="cards.png" alt="">
+                    </div>
+                </div>
             </form>
         </div>
     </div>
@@ -120,7 +120,7 @@
     <a id="payButton" class="main-button" onclick="payTickets()">
         Pay
     </a>
-    <a id="nextButton" class="main-button disabled" onclick="next()">
+    <a id="nextButton" class="main-button hidden" onclick="next()">
         Next
     </a>
 </div>
@@ -139,7 +139,12 @@
 
     function payTickets() {
 
-        console.log("pay tickets clicked! ");
+
+        document.getElementById("payButton").className = "main-button disabled";
+        document.getElementById("ccFormFields").className = "form-field hidden";
+        document.getElementById("ccFormFields2").className = "form-field hidden";
+        document.getElementById("ccFormFieldsHalf1").className = "form-field hidden";
+        document.getElementById("ccFormFieldsHalf2").className = "form-field hidden";
 
         var cc = document.getElementById("ccNumber").value;
 
@@ -232,7 +237,7 @@
                 var data = JSON.parse(ce["data"]);
                 console.log(data);
                 document.getElementById("nextButton").className = "main-button";
-                document.getElementById("payButton").className = "main-button disabled";
+                document.getElementById("payButton").className = "main-button hidden";
 
             }
         };

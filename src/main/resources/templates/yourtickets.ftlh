@@ -52,14 +52,13 @@
                 <div class="ticket-header">
                     <h4>2 tickets for: </h4>
                     <h3>Really Cool Concert </h3>
-
-
                 </div>
+                <p>Tickets Unique Code:  ${ticketsCode}</p>
                 <p>Your buying ID is ${sessionId}</p>
                 <p>Your reservation ID is ${reservationId}</p>
                 <div class="ticket-info">
                     <h4>May 14, 2021 </h4>
-                    <h4>VIP Tickets: ${ticketsCode} </h4>
+                    <h4>VIP Tickets</h4>
                 </div>
             </div>
         </div>
