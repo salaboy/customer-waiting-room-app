@@ -149,7 +149,7 @@
         var cc = document.getElementById("ccNumber").value;
 
         var xhr = new XMLHttpRequest();
-        xhr.open("POST", "/tickets/checkout", true);
+        xhr.open("POST", "/broker", true);
         var data = JSON.stringify(
             {
                 sessionId: "${sessionId}",
@@ -161,54 +161,78 @@
         xhr.setRequestHeader('Ce-Id', 'CE-' + "${sessionId}");
         xhr.setRequestHeader('Ce-Type', 'Tickets.PaymentRequested');
         xhr.setRequestHeader('Ce-Source', 'website');
-        xhr.setRequestHeader('correlationKey', "${reservationId}");
+        xhr.setRequestHeader('Ce-Specversion', '1.0');
+        xhr.setRequestHeader('Ce-CorrelationKey', "${reservationId}");
+
 
         /// curl -X POST http://customer-waiting-room-app.default.34.78.5.94.xip.io/router/message -H "Ce-Id: 123" -H "Ce-Type: NewCustomer"  -H "Ce-Source: curl" -H "Ce-Subject: hello"  -H "Content-Type: application/json" -H "correlationKey: 1" -d '"{\"sessionId\":\"1\"}"' -v
 
         xhr.onreadystatechange = function () {
-            if (xhr.status === 200) {
-                callback2(xhr.response);
+            if (xhr.readyState === 4) {
+                callback(xhr.response);
             }
         }
 
         xhr.send(JSON.stringify(data));
 
 
-        xhr = new XMLHttpRequest();
-        xhr.open("POST", "/router/message", true);
 
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.setRequestHeader('Ce-Id', 'CE-' + "${sessionId}");
-        xhr.setRequestHeader('Ce-Type', 'Tickets.PaymentRequested');
-        xhr.setRequestHeader('Ce-Source', 'website');
-        xhr.setRequestHeader('correlationKey', "${reservationId}");
+        <#--var xhr = new XMLHttpRequest();-->
+        <#--xhr.open("POST", "/tickets/checkout", true);-->
+        <#--var data = JSON.stringify(-->
+        <#--    {-->
+        <#--        sessionId: "${sessionId}",-->
+        <#--        reservationId: "${reservationId}",-->
+        <#--        cc: cc-->
+        <#--    }-->
+        <#--);-->
+        <#--xhr.setRequestHeader('Content-Type', 'application/json');-->
+        <#--xhr.setRequestHeader('Ce-Id', 'CE-' + "${sessionId}");-->
+        <#--xhr.setRequestHeader('Ce-Type', 'Tickets.PaymentRequested');-->
+        <#--xhr.setRequestHeader('Ce-Source', 'website');-->
+        <#--xhr.setRequestHeader('correlationKey', "${reservationId}");-->
 
-        /// curl -X POST http://customer-waiting-room-app.default.34.78.5.94.xip.io/router/message -H "Ce-Id: 123" -H "Ce-Type: NewCustomer"  -H "Ce-Source: curl" -H "Ce-Subject: hello"  -H "Content-Type: application/json" -H "correlationKey: 1" -d '"{\"sessionId\":\"1\"}"' -v
+        <#--/// curl -X POST http://customer-waiting-room-app.default.34.78.5.94.xip.io/router/message -H "Ce-Id: 123" -H "Ce-Type: NewCustomer"  -H "Ce-Source: curl" -H "Ce-Subject: hello"  -H "Content-Type: application/json" -H "correlationKey: 1" -d '"{\"sessionId\":\"1\"}"' -v-->
 
-        xhr.onreadystatechange = function () {
-            if (xhr.status === 200) {
-                callback1(xhr.response);
-            }
-        }
+        <#--xhr.onreadystatechange = function () {-->
+        <#--    if (xhr.status === 200) {-->
+        <#--        callback2(xhr.response);-->
+        <#--    }-->
+        <#--}-->
 
-        xhr.send(JSON.stringify(data));
+        <#--xhr.send(JSON.stringify(data));-->
+
+
+        <#--xhr = new XMLHttpRequest();-->
+        <#--xhr.open("POST", "/router/message", true);-->
+
+        <#--xhr.setRequestHeader('Content-Type', 'application/json');-->
+        <#--xhr.setRequestHeader('Ce-Id', 'CE-' + "${sessionId}");-->
+        <#--xhr.setRequestHeader('Ce-Type', 'Tickets.PaymentRequested');-->
+        <#--xhr.setRequestHeader('Ce-Source', 'website');-->
+        <#--xhr.setRequestHeader('correlationKey', "${reservationId}");-->
+
+        <#--/// curl -X POST http://customer-waiting-room-app.default.34.78.5.94.xip.io/router/message -H "Ce-Id: 123" -H "Ce-Type: NewCustomer"  -H "Ce-Source: curl" -H "Ce-Subject: hello"  -H "Content-Type: application/json" -H "correlationKey: 1" -d '"{\"sessionId\":\"1\"}"' -v-->
+
+        <#--xhr.onreadystatechange = function () {-->
+        <#--    if (xhr.status === 200) {-->
+        <#--        callback1(xhr.response);-->
+        <#--    }-->
+        <#--}-->
+
+        <#--xhr.send(JSON.stringify(data));-->
 
     }
 
-    function callback1(response) {
-        console.log(response);
-        console.log("payment request received!!!");
-
+    function callback(response) {
         document.getElementById("paymentFrame").src="${paymentsServiceExternal}/?sessionId=${sessionId}&reservationId=${reservationId}";
         document.getElementById("paymentFrame").width="100%";
         document.getElementById("paymentFrame").height="300px";
-        //document.getElementById("paymentFrame").src = "http://localhost:8083/?sessionId=${sessionId}&reservationId=${reservationId}"
+       // document.getElementById("paymentFrame").src = "http://localhost:8083/?sessionId=${sessionId}&reservationId=${reservationId}"
         connect();
     }
 
-    function callback2(response) {
-        console.log(response);
-    }
+
 
     var sessionId;
 

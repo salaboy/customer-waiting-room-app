@@ -109,6 +109,7 @@
         xhr.setRequestHeader('Ce-Id', 'CE-' +  "${sessionId}");
         xhr.setRequestHeader('Ce-Type', 'Queue.CustomerAbandoned');
         xhr.setRequestHeader('Ce-Source', 'website');
+        xhr.setRequestHeader('Ce-Specversion', '1.0');
         xhr.setRequestHeader('correlationKey',  "${sessionId}");
 
 
@@ -225,7 +226,8 @@
         xhr.setRequestHeader('Ce-Id', 'CE-' + "${sessionId}");
         xhr.setRequestHeader('Ce-Type', 'Queue.CustomerJoined');
         xhr.setRequestHeader('Ce-Source', 'website');
-        xhr.setRequestHeader('correlationKey', "${sessionId}");
+        xhr.setRequestHeader('Ce-Specversion', '1.0');
+        xhr.setRequestHeader('Ce-CorrelationKey', "${sessionId}");
 
         /// curl -X POST http://customer-waiting-room-app.default.34.78.5.94.xip.io/router/message -H "Ce-Id: 123" -H "Ce-Type: Queue.CustomerJoined    "  -H "Ce-Source: curl" -H "Ce-Subject: hello"  -H "Content-Type: application/json" -H "correlationKey: 1" -d '"{\"sessionId\":\"1\"}"' -v
 

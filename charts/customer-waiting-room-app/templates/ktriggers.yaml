@@ -1,0 +1,26 @@
+apiVersion: eventing.knative.dev/v1
+kind: Trigger
+metadata:
+  name: ui-queue-exit-trigger
+  namespace: default
+spec:
+  broker: default
+  filter:
+    attributes:
+      type: Queue.CustomerExited
+  subscriber:
+    uri: http://customer-waiting-room-app.default.svc.cluster.local/api/
+
+---
+apiVersion: eventing.knative.dev/v1
+kind: Trigger
+metadata:
+  name: ui-tickets-payment-authorized-trigger
+  namespace: default
+spec:
+  broker: default
+  filter:
+    attributes:
+      type: Tickets.PaymentsAuthorized
+  subscriber:
+    uri: http://customer-waiting-room-app.default.svc.cluster.local/api/

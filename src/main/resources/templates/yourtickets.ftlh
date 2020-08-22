@@ -50,14 +50,14 @@
         <div class="queue-list">
             <div class="ticket">
                 <div class="ticket-header">
-                    <h4>2 tickets for: </h4>
+                    <h4>Your tickets for: </h4>
                     <h3>Really Cool Concert </h3>
                 </div>
                 <p>Tickets Unique Code:  ${ticketsCode}</p>
                 <p>Your buying ID is ${sessionId}</p>
                 <p>Your reservation ID is ${reservationId}</p>
                 <div class="ticket-info">
-                    <h4>May 14, 2021 </h4>
+                    <h4>Aug 24, 2020 </h4>
                     <h4>VIP Tickets</h4>
                 </div>
             </div>
@@ -66,7 +66,7 @@
     </div>
 </div>
 <div class="button-layer">
-    <a  href="index.html" class="main-button" >
+    <a  href="#" class="main-button" >
         Download Your Tickets
     </a>
 </div>
@@ -79,106 +79,7 @@
 <script src="js/plugins.js"></script>
 
 <script type="text/javascript">
- function payTickets(){
-     document.getElementById("paymentStatus").innerHTML="Payment request sent";
-     console.log("pay tickets clicked! ");
-     //document.getElementById("paymentFrame").src="http://payments-service/?sessionId=${sessionId}&reservationId=${reservationId}"
-     document.getElementById("paymentFrame").src="http://localhost:8083/?sessionId=${sessionId}&reservationId=${reservationId}"
-     var cc = document.getElementById("creditCard").value;
 
-     var xhr = new XMLHttpRequest();
-     xhr.open("POST", "/tickets/checkout", true);
-     var data = JSON.stringify(
-         {
-             sessionId: "${sessionId}",
-             reservationId: "${reservationId}",
-             cc: cc
-         }
-     );
-     xhr.setRequestHeader('Content-Type', 'application/json');
-     xhr.setRequestHeader('Ce-Id', 'CE-' + "${sessionId}");
-     xhr.setRequestHeader('Ce-Type', 'Tickets.PaymentRequested');
-     xhr.setRequestHeader('Ce-Source', 'website');
-     xhr.setRequestHeader('correlationKey', "${reservationId}");
-
-     /// curl -X POST http://customer-waiting-room-app.default.34.78.5.94.xip.io/router/message -H "Ce-Id: 123" -H "Ce-Type: NewCustomer"  -H "Ce-Source: curl" -H "Ce-Subject: hello"  -H "Content-Type: application/json" -H "correlationKey: 1" -d '"{\"sessionId\":\"1\"}"' -v
-
-     xhr.onreadystatechange = function () {
-         if (xhr.readyState === 4) {
-             callback(xhr.response);
-         }
-     }
-
-     xhr.send(JSON.stringify(data));
-
-
-     xhr = new XMLHttpRequest();
-     xhr.open("POST", "/router/message", true);
-
-     xhr.setRequestHeader('Content-Type', 'application/json');
-     xhr.setRequestHeader('Ce-Id', 'CE-' + "${sessionId}");
-     xhr.setRequestHeader('Ce-Type', 'Tickets.PaymentRequested');
-     xhr.setRequestHeader('Ce-Source', 'website');
-     xhr.setRequestHeader('correlationKey', "${reservationId}");
-
-     /// curl -X POST http://customer-waiting-room-app.default.34.78.5.94.xip.io/router/message -H "Ce-Id: 123" -H "Ce-Type: NewCustomer"  -H "Ce-Source: curl" -H "Ce-Subject: hello"  -H "Content-Type: application/json" -H "correlationKey: 1" -d '"{\"sessionId\":\"1\"}"' -v
-
-     xhr.onreadystatechange = function () {
-         if (xhr.readyState === 4) {
-             callback(xhr.response);
-         }
-     }
-
-     xhr.send(JSON.stringify(data));
-
- }
- function callback(response) {
-    console.log(response);
-    console.log("payment request received!!!");
-     document.getElementById("paymentStatus").innerHTML="Payment request recieved";
-    connect();
- }
-
- var sessionId;
-
- console.log("Protocol: " + location.protocol);
- let wsURL = "ws://" + document.location.host + "/ws?sessionId=${sessionId}";
- if (location.protocol === 'https:') {
-     wsURL = "wss://" + document.location.host + "/ws?sessionId=${sessionId}";
- }
- console.log("WS URL: " + wsURL);
-
- var sock;
-
- function connect() {
-
-     sock = new WebSocket(wsURL);
-     sock.onopen = function () {
-         console.log('Info: Connection Established.');
-     };
-
-     sock.onmessage = function (event) {
-         console.log(event.data)
-         let ce = JSON.parse(event.data);
-         console.log(ce);
-         if (ce["type"] === "Tickets.PaymentsAuthorized") {
-
-             var data = JSON.parse(ce["data"]);
-             console.log(data);
-             document.getElementById("paymentStatus").innerHTML="Payment Authorized!";
-
-
-         }
-     };
-
-     sock.onerror = function (event) {
-         console.log("EFFOR: " + event);
-     }
-     sock.onclose = function (event) {
-
-         console.log('Info: Closing Connection. -> ' + event);
-     };
- }
 
 </script>
 

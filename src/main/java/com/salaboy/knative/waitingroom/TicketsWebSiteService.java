@@ -6,6 +6,7 @@ import com.salaboy.cloudevents.helper.CloudEventsHelper;
 import com.salaboy.knative.waitingroom.models.ClientSession;
 import com.salaboy.knative.waitingroom.models.ServiceInfo;
 import io.cloudevents.CloudEvent;
+import io.cloudevents.core.format.EventFormat;
 import io.cloudevents.core.provider.EventFormatProvider;
 import io.cloudevents.jackson.JsonFormat;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.gateway.filter.GatewayFilterChain;
+import org.springframework.cloud.gateway.filter.GlobalFilter;
+import org.springframework.cloud.gateway.route.Route;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -30,16 +34,19 @@ import org.springframework.web.reactive.socket.server.WebSocketService;
 import org.springframework.web.reactive.socket.server.support.HandshakeWebSocketService;
 import org.springframework.web.reactive.socket.server.support.WebSocketHandlerAdapter;
 import org.springframework.web.reactive.socket.server.upgrade.ReactorNettyRequestUpgradeStrategy;
+import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebSession;
 import reactor.core.publisher.EmitterProcessor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.net.URI;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import static java.util.UUID.randomUUID;
+import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.*;
 
 @SpringBootApplication
 @Slf4j
@@ -53,6 +60,11 @@ public class TicketsWebSiteService {
     private WebSocketHandler webSocketHandler;
 
     private List<String> users = new CopyOnWriteArrayList<String>();
+
+    @Bean
+    public GlobalFilter customFilter() {
+        return new LoggingFilter();
+    }
 
     @Bean
     public HandlerMapping webSocketHandlerMapping() {
@@ -81,6 +93,21 @@ public class TicketsWebSiteService {
 
 }
 
+@Slf4j
+class LoggingFilter implements GlobalFilter {
+
+
+    @Override
+    public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+        Set<URI> uris = exchange.getAttributeOrDefault(GATEWAY_ORIGINAL_REQUEST_URL_ATTR, Collections.emptySet());
+        String originalUri = (uris.isEmpty()) ? "Unknown" : uris.iterator().next().toString();
+        Route route = exchange.getAttribute(GATEWAY_ROUTE_ATTR);
+        URI routeUri = exchange.getAttribute(GATEWAY_REQUEST_URL_ATTR);
+        log.info(">>> Incoming request " + originalUri + " is routed to id: " + route.getId()
+                + ", uri:" + routeUri);
+        return chain.filter(exchange);
+    }
+}
 
 @Component
 @Slf4j
@@ -159,10 +186,21 @@ class SiteRestController {
         return "{ \"name\" : \"User Interface\", \"version\" : \"" + version + "\", \"source\": \"https://github.com/salaboy/customer-waiting-room-app/releases/tag/v" + version + "\" }";
     }
 
+    private void logCloudEvent(CloudEvent cloudEvent) {
+        EventFormat format = EventFormatProvider
+                .getInstance()
+                .resolveFormat(JsonFormat.CONTENT_TYPE);
+
+        log.info("Cloud Event: " + new String(format.serialize(cloudEvent)));
+
+    }
 
     @PostMapping("/")
     public String pushDataViaWebSocket(@RequestHeader HttpHeaders headers, @RequestBody String body) throws JsonProcessingException {
         CloudEvent cloudEvent = CloudEventsHelper.parseFromRequest(headers, body);
+
+        logCloudEvent(cloudEvent);
+
         log.info("Getting processor for session Id: " + headers.get("Sessionid"));
         log.info("> All HEADERS: " );
         for(String key : headers.keySet()){
@@ -215,7 +253,7 @@ class TicketsSiteController {
     @Value("${TICKETS_SERVICE:http://tickets-service}")
     private String TICKETS_SERVICE;
 
-    @Value("${PAYMENTS_SERVICE_EXTERNAL:http://payments-service.default.34.78.5.94.xip.io}") //it needs to be the public IP here..
+    @Value("${PAYMENTS_SERVICE_EXTERNAL:http://payments-service.default.34.121.118.94.xip.io}") //it needs to be the public IP here..
     private String PAYMENTS_SERVICE_EXTERNAL;
 
     @Value("${K_SINK:http://broker-ingress.knative-eventing.svc.cluster.local/default/default}") //it needs to be the public IP here..
@@ -285,9 +323,13 @@ class TicketsSiteController {
     }
 
     @GetMapping("/tickets")
-    public String tickets(@RequestParam(value = "sessionId", required = true) String sessionId, Model model) {
+    public String tickets(@RequestParam(value = "sessionId", required = true) String sessionId, WebSession session, Model model) {
+
+        session.getAttributes().putIfAbsent("reservationId", randomUUID().toString());
+        String reservationId = session.getAttribute("reservationId");
 
         model.addAttribute("version", version);
+        model.addAttribute("reservationId", reservationId);
         model.addAttribute("sessionId", sessionId);
 
         return "tickets";
@@ -297,7 +339,8 @@ class TicketsSiteController {
     public String backoffice( WebSession session, @RequestParam(value="reset", required = false, defaultValue = "false") boolean reset, Model model) {
 
         if(reset){
-            session.getAttributes().put("sessionId", randomUUID().toString());
+            session.getAttributes().remove("sessionId");
+            session.getAttributes().remove("reservationId");
         }
         model.addAttribute("version", version);
 

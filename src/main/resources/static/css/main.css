@@ -11,15 +11,15 @@
    Base styles: opinionated defaults
    ========================================================================== */
 
- :root {
-   --main-color: #F16D8F;
-   --gray-color: #8E8E96;
-   --background-color: #E7E7EA;
-   --dark-gray-color: #6F6F77;
-   --main-color-hover: #BC4563;
+:root {
+  --main-color: #F16D8F;
+  --gray-color: #8E8E96;
+  --background-color: #E7E7EA;
+  --dark-gray-color: #6F6F77;
+  --main-color-hover: #BC4563;
 
-   --main-text-color: #FFF;
- }
+  --main-text-color: #FFF;
+}
 
 html, body {
   color: #0D1F3C;
@@ -145,15 +145,11 @@ h5 {
   border: 2px solid var(--main-color);
 }
 
-.button-layer .main-button.hidden {
-  display: none;
-}
-
 .button-layer .main-button.disabled {
   background-color: var(--gray-color);
 }
 .button-layer .main-button.disabled:hover {
-    background-color: var(--dark-gray-color);
+  background-color: var(--dark-gray-color);
 }
 .button-layer .main-button span {
   position: relative;
@@ -339,7 +335,7 @@ body.backoffice .block.header .header__options a span {
 }
 
 .item-list > li.declined > .item-list__title, .item-list > li.declined > .item-list__description {
-    opacity: .3;
+  opacity: .3;
 }
 
 .item-list > li > .item-list__title {
@@ -505,7 +501,7 @@ body.backoffice .block.header .header__options a span {
   box-sizing: border-box;
   max-height: 90%;
   display: flex;
-    flex-flow: column;
+  flex-flow: column;
 
 }
 
@@ -538,7 +534,7 @@ body.backoffice .block.header .header__options a span {
   color: #666;
   border-bottom: 1px solid rgba(0,0,0,.2);
   max-height: 80%;
-    overflow: scroll;
+  overflow: scroll;
 }
 
 .modal .modal__content .modal__content__message {
@@ -610,9 +606,6 @@ body.backoffice .block.header .header__options a span {
 .form .form-field.half {
   width: 50%;
 }
-.form .form-field.hidden {
-  display: none;
-}
 .form .form-field.quarter {
   width: 22%;
 }
@@ -666,8 +659,8 @@ body.backoffice .block.header .header__options a span {
 
 }
 .queue .queue-header {
-    padding: 40px;
-    border-bottom: 1px solid var(--background-color);
+  padding: 40px;
+  border-bottom: 1px solid var(--background-color);
 }
 .queue .queue-header p {
   opacity: .7;
@@ -683,7 +676,7 @@ body.backoffice .block.header .header__options a span {
   color: #FFF;
 }
 .queue .queue-list, .queue .queue-form {
-    padding: 40px;
+  padding: 40px;
 
 }
 
@@ -719,15 +712,54 @@ body.backoffice .block.header .header__options a span {
 .sessions {
   margin: 0 100px;
   max-width: 605px;
+  padding-bottom: 300px;
 }
 
 .sessions .session {
   background-color: var(--main-text-color);
   margin: 10px 0;
-  padding: 10px;
+
   border-radius: 5px;
   position: relative;
 }
+.sessions .session__id {
+  padding: 10px;
+  color: #666;
+}
+.sessions .session__id span {
+  color: #333;
+  font-weight: bold;
+}
+
+.sessions .session__actions {
+  border-top: 1px solid #CCC;
+  padding: 10px;
+
+}
+.sessions .session__actions .button {
+  display: inline-block;
+  padding: 5px;
+  color: var(--main-color);
+  background-color: #FFF;
+  border-radius: 5px;
+  border: 2px solid var(--main-color);
+  cursor: pointer;
+}
+.sessions .session__actions .button:hover {
+  color: var(--main-color-hover);
+  border: 2px solid var(--main-color-hover);
+}
+.sessions .session__actions .button.button-remove:hover {
+  background-color: var(--main-color-hover);
+  border: 2px solid var(--main-color-hover);
+}
+
+.sessions .session__actions .button.button-remove {
+  color: #fff;
+  background-color: var(--main-color);
+  border: 2px solid var(--main-color);
+}
+
 .sessions .session a {
   color: var(--gray-color);
   position: relative;
@@ -746,8 +778,8 @@ body.backoffice .block.header .header__options a span {
   border-radius: 5px;
 }
 .sessions .session a:hover {
-    color: var(--main-color);
-    text-decoration: none;
+  color: var(--main-color);
+  text-decoration: none;
 }
 .sessions .session a:hover:before {
   opacity: 1;
@@ -1092,9 +1124,9 @@ textarea {
 }
 
 @media print,
-  (-webkit-min-device-pixel-ratio: 1.25),
-  (min-resolution: 1.25dppx),
-  (min-resolution: 120dpi) {
+(-webkit-min-device-pixel-ratio: 1.25),
+(min-resolution: 1.25dppx),
+(min-resolution: 120dpi) {
   /* Style adjustments for high resolution devices */
 }
 

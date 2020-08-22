@@ -46,7 +46,8 @@
     <div class="queue">
         <div class="queue-header">
             <h2>Purchase your tickets.</h2>
-            <p>Your buying ID is ${sessionId}</p>
+            <p>Your session ID is ${sessionId}</p>
+            <p>Your reservation ID is ${reservationId}</p>
 
         </div>
         <div class="queue-form">
@@ -85,14 +86,14 @@
 
 <script type="text/javascript">
  function reserveTickets(){
-     console.log("buy tickets clicked! ");
 
      var ticketsType = document.getElementById("ticketsType").value;
      var ticketsQuantity = document.getElementById("ticketsQuantity").value;
      var xhr = new XMLHttpRequest();
-     xhr.open("POST", "/tickets/reserve", true);
+     xhr.open("POST", "/broker", true);
      var data = JSON.stringify(
          {
+             reservationId: "${reservationId}",
              sessionId: "${sessionId}",
              ticketsType: ticketsType,
              ticketsQuantity: ticketsQuantity
@@ -102,7 +103,8 @@
      xhr.setRequestHeader('Ce-Id', 'CE-' + "${sessionId}");
      xhr.setRequestHeader('Ce-Type', 'Tickets.Reserved');
      xhr.setRequestHeader('Ce-Source', 'website');
-     xhr.setRequestHeader('correlationKey', "${sessionId}");
+     xhr.setRequestHeader('Ce-CorrelationKey', "${sessionId}");
+     xhr.setRequestHeader('Ce-Specversion', '1.0');
 
      /// curl -X POST http://customer-waiting-room-app.default.34.78.5.94.xip.io/router/message -H "Ce-Id: 123" -H "Ce-Type: NewCustomer"  -H "Ce-Source: curl" -H "Ce-Subject: hello"  -H "Content-Type: application/json" -H "correlationKey: 1" -d '"{\"sessionId\":\"1\"}"' -v
 
@@ -115,10 +117,7 @@
      xhr.send(JSON.stringify(data));
  }
  function callback(response) {
-    console.log(response);
-    var data = JSON.parse(response);
-    console.log(data);
-    window.location.href = "/pay?sessionId=${sessionId}&reservationId="+data.reservationId;
+    window.location.href = "/pay?sessionId=${sessionId}&reservationId=${reservationId}";
  }
 
 </script>

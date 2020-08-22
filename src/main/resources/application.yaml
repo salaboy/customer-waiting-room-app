@@ -41,11 +41,11 @@ spring:
         filters:
           - RewritePath=/queue/(?<id>.*), /$\{id}
       - id: broker
-        uri: ${K_SINK:http://broker-ingress.knative-eventing.svc.cluster.local/default/default}
+        uri: ${K_SINK:http://broker-ingress.knative-eventing.svc.cluster.local}
         predicates:
-          - Path=/broker/**
+          - Path=/broker
         filters:
-          - RewritePath=/broker/(?<id>.*), /$\{id}
+          - RewritePath=/broker, /default/default
 management:
   endpoints:
     web:
