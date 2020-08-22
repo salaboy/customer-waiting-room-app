@@ -45,24 +45,16 @@
     </div>
 
     <div class="sessions" id="sessions">
-        <div class="session">
-            <div class="session__id">
-                <span>1. </span>
-                81390238-210931238901-238201938
-            </div>
-            <div class="session__actions">
-                <div class="button button-remove">Remove</div>
-                <div class="button">Other Action</div>
-            </div>
-        </div>
-        <#--        <div class="session">-->
-        <#--            <a href="#">81390238210931238901238201938242342342310 24 234 38091238812903812039</a>-->
-        <#--        </div>-->
-        <#--        <div class="session">-->
-        <#--            <a href="#">8139023821093812903812039</a>-->
-        <#--        </div>-->
-
-
+<#--        <div class="session">-->
+<#--            <div class="session__id">-->
+<#--                <span>1. </span>-->
+<#--                81390238-210931238901-238201938-->
+<#--            </div>-->
+<#--            <div class="session__actions">-->
+<#--                <div class="button button-remove">Remove</div>-->
+<#--                <div class="button">Other Action</div>-->
+<#--            </div>-->
+<#--        </div>-->
     </div>
 </div>
 <div class="button-layer">
@@ -74,11 +66,6 @@
         Reset
     </a>
 
-    <#--    <a class="main-button">-->
-
-    <#--        Remove all Sessions-->
-
-    <#--    </a>-->
 </div>
 
 
@@ -91,7 +78,7 @@
 <script type="text/javascript">
 
     fetchActiveSessions();
-    setInterval(fetchActiveSessions, 3000);
+    setInterval(fetchActiveSessions, 1000);
 
     function fetchActiveSessions() {
 
@@ -105,29 +92,32 @@
                 var sessionsDiv = document.getElementById("sessions");
                 sessionsDiv.innerHTML = "";
                 for (i = 0; i < data.length; i++) {
-                    var sessionId = data[i].sessionId;
+                    const sessionId = data[i].sessionId;
                     var sessionDiv = document.createElement("div");
                     sessionDiv.className = "session";
                     var sessionIdDiv = document.createElement("div");
                     sessionIdDiv.className = "session__id"
                     var sessionIdSpan = document.createElement("span");
-                    sessionIdSpan.innerText = i;
+                    sessionIdSpan.append(i + ". ");
                     sessionIdDiv.appendChild(sessionIdSpan);
-                    sessionIdDiv.innerText = sessionId;
+                    sessionIdDiv.append(sessionId);
 
                     sessionDiv.appendChild(sessionIdDiv);
 
                     var sessionActionsDiv = document.createElement("div");
                     sessionActionsDiv.className = "session__actions"
 
+
                     sessionDiv.appendChild(sessionActionsDiv);
 
-                    a.href = "#";
-                    a.onclick = function () {
+                    var removeSessionButton = document.createElement("div");
+
+                    removeSessionButton.onclick = function () {
                         abandonQueue(sessionId);
                     };
-                    a.innerHTML = sessionId;
-                    sessionDiv.appendChild(a)
+                    removeSessionButton.innerHTML = "Remove";
+                    removeSessionButton.className = "button button-remove";
+                    sessionActionsDiv.appendChild(removeSessionButton);
                     sessionsDiv.appendChild(sessionDiv);
                 }
             }
@@ -138,7 +128,7 @@
     function abandonQueue(sessionId) {
         console.log("Abandoning queue for session: " + sessionId);
         var xhr = new XMLHttpRequest();
-        xhr.open("POST", "/router/message", true);
+        xhr.open("POST", "/broker", true);
         var data = JSON.stringify(
             {
                 sessionId: sessionId,
@@ -148,7 +138,8 @@
         xhr.setRequestHeader('Ce-Id', 'CE-' + sessionId);
         xhr.setRequestHeader('Ce-Type', 'Queue.CustomerAbandoned');
         xhr.setRequestHeader('Ce-Source', 'website');
-        xhr.setRequestHeader('correlationKey', sessionId);
+        xhr.setRequestHeader('Ce-Specversion', '1.0');
+        xhr.setRequestHeader('Ce-CorrelationKey', sessionId);
 
 
         xhr.onreadystatechange = function () {
@@ -160,24 +151,7 @@
         console.log("Sending Cloud Event to Router: " + JSON.stringify(data));
         xhr.send(JSON.stringify(data));
 
-        xhr = new XMLHttpRequest();
-        xhr.open("POST", "/queue/abandon", true);
 
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.setRequestHeader('Ce-Id', 'CE-' + sessionId);
-        xhr.setRequestHeader('Ce-Type', 'Queue.CustomerAbandoned');
-        xhr.setRequestHeader('Ce-Source', 'website');
-        xhr.setRequestHeader('correlationKey', sessionId);
-
-
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4) {
-                callback(xhr.response);
-            }
-        }
-
-        console.log("Sending Cloud Event to Router: " + JSON.stringify(data));
-        xhr.send(JSON.stringify(data));
     }
 
     function createMyGuid() {
