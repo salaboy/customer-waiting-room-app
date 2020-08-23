@@ -27,10 +27,10 @@
 <!-- Add your site or application content here -->
 <div class="block header">
     <div class="header__image">
-        <img src="img/kubecon-logo.png" width="35">
+
     </div>
     <div class="header__title">
-        <h1>Waiting Room Demo v0.0.0 </h1>
+        <h1>Tickets Portal v0.0.0 </h1>
     </div>
     <div class="header__options">
 
@@ -39,13 +39,13 @@
 </div>
 <div class="bottom-blocks">
     <div class="main-title">
-        <h3>Welcome to your Tickets Portal</h3>
+
 
     </div>
     <div class="queue">
         <div class="queue-header">
-            <h2>Purchase your tickets.</h2>
-            <p>Your buying ID is ${sessionId}</p>
+            <h2>Pay your tickets.</h2>
+            <div class="codesIds">Session Id: <span>${sessionId}</span></div>
 
         </div>
         <div class="queue-form">
@@ -54,31 +54,31 @@
                 <div id="ccFormFields" class="form-field">
                     <label>Credit Card Number</label>
                     <div class="form-field quarter">
-                        <input id="ccNumber" type="number" maxlength="4">
+                        <input id="ccNumber" type="number" maxlength="4" value="1111">
                     </div>
                     <div class="form-field quarter">
-                        <input type="number" maxlength="4">
+                        <input type="number" maxlength="4" value="2222">
                     </div>
                     <div class="form-field quarter">
-                        <input type="number" maxlength="4">
+                        <input type="number" maxlength="4" value="3333">
                     </div>
                     <div class="form-field quarter">
-                        <input type="number" maxlength="4">
+                        <input type="number" maxlength="4" value="4444">
                     </div>
                 </div>
                 <div id="ccFormFieldsHalf1" class="form-field half">
                     <label>Expiration Date</label>
                     <div class="form-field xsmall">
-                        <input placeholder="MM" type="number" maxlength="2" max="31">
+                        <input placeholder="MM" type="number" maxlength="2" max="31" value="11">
                     </div>
                     <div class="form-field xsmall">
-                        <input placeholder="YY" type="number" maxlength="2" max="12">
+                        <input placeholder="YY" type="number" maxlength="2" max="12" value="22">
                     </div>
                 </div>
                 <div id="ccFormFieldsHalf2" class="form-field half">
                     <label>Security Code</label>
                     <div class="form-field small">
-                        <input type="number" maxlength="3">
+                        <input type="password" maxlength="3" value="123" >
                     </div>
 
                 </div>

@@ -28,10 +28,10 @@
 <!-- Add your site or application content here -->
 <div class="block header">
     <div class="header__image">
-        <img src="img/kubecon-logo.png" width="35">
+
     </div>
     <div class="header__title">
-        <h1>Waiting Room Demo v0.0.0 </h1>
+        <h1>Tickets Portal v0.0.0 </h1>
     </div>
     <div class="header__options">
 
@@ -40,14 +40,14 @@
 </div>
 <div class="bottom-blocks">
     <div class="main-title">
-        <h3>Welcome to your Tickets Portal</h3>
+
 
     </div>
     <div class="queue">
         <div class="queue-header">
             <h2>Purchase your tickets.</h2>
-            <p>Your session ID is ${sessionId}</p>
-            <p>Your reservation ID is ${reservationId}</p>
+            <div class="codesIds">Session ID:  <span>${sessionId}</span></div>
+            <div class="codesIds">Reservation ID:  <span>${reservationId}</span></div>
 
         </div>
         <div class="queue-form">

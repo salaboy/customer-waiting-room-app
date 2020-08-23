@@ -27,10 +27,10 @@
 <!-- Add your site or application content here -->
 <div class="block header">
     <div class="header__image">
-        <img src="img/kubecon-logo.png" width="35">
+
     </div>
     <div class="header__title">
-        <h1>Waiting Room Demo v0.0.0 </h1>
+        <h1>Tickets Portal v0.0.0 </h1>
     </div>
     <div class="header__options">
         <a href="/backoffice">
@@ -40,15 +40,11 @@
 
 </div>
 <div class="bottom-blocks">
-    <div class="main-title">
-        <h3>Welcome to your Tickets Portal</h3>
 
-    </div>
     <div class="queue">
 
-
         <div class="queue-header">
-            <h2 id="queueTitle">Join the queue to buy your tickets.</h2>
+            <h2 id="queueTitle">Join the queue.</h2>
             <#--            <h2>It's your turn!</h2>-->
             <#--            <h2>You are number <span class="position" id="queuePosition">X</span> of <span id="queueSize">X</span>-->
             <#--                people waiting.</h2>-->
@@ -94,9 +90,9 @@
         var queueList = document.getElementById('queue-list');
         document.getElementById('quitQueueButton').className = "main-button hidden";
         document.getElementById('joinQueueButton').className = "main-button";
-        document.getElementById('queueTitle').innerHTML = "Join the queue to buy your tickets."
+        document.getElementById('queueTitle').innerHTML = "Join the queue."
         document.getElementById('waitingLabel').innerHTML = "There are currently <span id=\"queueSize\">X</span> people waiting. Your approximate waiting time will be <span id=\"queueWaitingTime\">X</span> minutes.";
-        queueList.className = "queue-list-hidden";
+        queueList.className = "queue-list queue-list-hidden";
         console.log("Abandoning queue for session: " + sessionId);
         var xhr = new XMLHttpRequest();
         xhr.open("POST", "/broker", true);
@@ -121,96 +117,13 @@
 
         console.log("Sending Cloud Event to Broker: " + JSON.stringify(data));
         xhr.send(JSON.stringify(data));
-        <#--var xhr = new XMLHttpRequest();-->
-        <#--xhr.open("POST", "/router/message", true);-->
-        <#--var data = JSON.stringify(-->
-        <#--    {-->
-        <#--        sessionId:  "${sessionId}",-->
-        <#--    }-->
-        <#--);-->
-        <#--xhr.setRequestHeader('Content-Type', 'application/json');-->
-        <#--xhr.setRequestHeader('Ce-Id', 'CE-' +  "${sessionId}");-->
-        <#--xhr.setRequestHeader('Ce-Type', 'Queue.CustomerAbandoned');-->
-        <#--xhr.setRequestHeader('Ce-Source', 'website');-->
-        <#--xhr.setRequestHeader('correlationKey',  "${sessionId}");-->
 
-
-        <#--xhr.onreadystatechange = function () {-->
-        <#--    if (xhr.readyState === 4) {-->
-        <#--        callback(xhr.response);-->
-        <#--    }-->
-        <#--}-->
-
-        <#--console.log("Sending Cloud Event to Router: " + JSON.stringify(data));-->
-        <#--xhr.send(JSON.stringify(data));-->
-
-        <#--xhr = new XMLHttpRequest();-->
-        <#--xhr.open("POST", "/queue/abandon", true);-->
-
-        <#--xhr.setRequestHeader('Content-Type', 'application/json');-->
-        <#--xhr.setRequestHeader('Ce-Id', 'CE-' +  "${sessionId}");-->
-        <#--xhr.setRequestHeader('Ce-Type', 'Queue.CustomerAbandoned');-->
-        <#--xhr.setRequestHeader('Ce-Source', 'website');-->
-        <#--xhr.setRequestHeader('correlationKey',  "${sessionId}");-->
-
-
-        <#--xhr.onreadystatechange = function () {-->
-        <#--    if (xhr.readyState === 4) {-->
-        <#--        callback(xhr.response);-->
-        <#--    }-->
-        <#--}-->
-
-        <#--console.log("Sending Cloud Event to Router: " + JSON.stringify(data));-->
-        <#--xhr.send(JSON.stringify(data));-->
     }
 
     function joinQueue() {
 
         document.getElementById("sessionIdLabel").innerHTML = "${sessionId}";
-        <#--var xhr = new XMLHttpRequest();-->
-        <#--xhr.open("POST", "/router/message", true);-->
-        <#--var data = JSON.stringify(-->
-        <#--    {-->
-        <#--        sessionId: "${sessionId}",-->
-        <#--        ticketsType: "",-->
-        <#--        ticketsQuantity: "0",-->
-        <#--        reservationId: ""-->
-        <#--    }-->
-        <#--);-->
-        <#--xhr.setRequestHeader('Content-Type', 'application/json');-->
-        <#--xhr.setRequestHeader('Ce-Id', 'CE-' + "${sessionId}");-->
-        <#--xhr.setRequestHeader('Ce-Type', 'Queue.CustomerJoined');-->
-        <#--xhr.setRequestHeader('Ce-Source', 'website');-->
-        <#--xhr.setRequestHeader('correlationKey', "${sessionId}");-->
 
-        <#--/// curl -X POST http://customer-waiting-room-app.default.34.78.5.94.xip.io/router/message -H "Ce-Id: 123" -H "Ce-Type: Queue.CustomerJoined    "  -H "Ce-Source: curl" -H "Ce-Subject: hello"  -H "Content-Type: application/json" -H "correlationKey: 1" -d '"{\"sessionId\":\"1\"}"' -v-->
-
-        <#--xhr.onreadystatechange = function () {-->
-        <#--    if (xhr.readyState === 4) {-->
-        <#--        callback(xhr.response);-->
-        <#--    }-->
-        <#--}-->
-
-        <#--console.log("Sending Cloud Event to Router: " + JSON.stringify(data));-->
-        <#--xhr.send(JSON.stringify(data)); // Double stringify escape double quotes that are needed-->
-
-        <#--xhr = new XMLHttpRequest();-->
-        <#--xhr.open("POST", "/queue/join", true);-->
-
-        <#--xhr.setRequestHeader('Content-Type', 'application/json');-->
-        <#--xhr.setRequestHeader('Ce-Id', 'CE-' + "${sessionId}");-->
-        <#--xhr.setRequestHeader('Ce-Type', 'Queue.CustomerJoined');-->
-        <#--xhr.setRequestHeader('Ce-Source', 'website');-->
-        <#--xhr.setRequestHeader('correlationKey', "${sessionId}");-->
-
-        <#--xhr.onreadystatechange = function () {-->
-        <#--    if (xhr.readyState === 4) {-->
-        <#--        callback(xhr.response);-->
-        <#--    }-->
-        <#--}-->
-
-        <#--console.log("Sending Cloud Event to Queue: " + JSON.stringify(data));-->
-        <#--xhr.send(JSON.stringify(data)); // Double stringify escape double quotes that are needed-->
 
         var xhr = new XMLHttpRequest();
         xhr.open("POST", "/broker", true);
@@ -265,17 +178,18 @@
             var queueTitle = document.getElementById('queueTitle');
             var waitingLabel = document.getElementById('waitingLabel');
             if (positionInQueue.position >= 0) {
-                queueTitle.innerHTML = "You are in the Queue";
-                waitingLabel.innerHTML = "You are number <span class=\"position\" id=\"queuePosition\">" + (response.position + 1) + "</span> of <span id=\"queueSize\">" + response.size + "</span> people waiting. Your approximate " +
+                queueTitle.innerHTML = "You are number <span class=\"position\" id=\"queuePosition\">" + (response.position + 1) + "</span> of <span id=\"queueSize\">" + response.size + "</span>";
+                waitingLabel.innerHTML = " Your approximate " +
                     "                waiting time is <span id=\"queueWaitingTime\">X</span> minutes.";
                 queueList.className = "queue-list";
             } else if(!readyToBuy){
 
-                queueList.className = "queue-list-hidden";
-                queueTitle.innerHTML = "Join the queue to buy your tickets.";
+                queueList.className = "queue-list queue-list-hidden";
+                queueTitle.innerHTML = "Join the queue.";
             }else{
-                queueList.className = "queue-list-hidden";
-                queueTitle.innerHTML = "Press Reserve to reserve your tickets now!";
+                queueList.className = "queue-list queue-list-hidden";
+                queueTitle.innerHTML = "Reserve your tickets now!";
+                queueList.parentNode.removeChild(queueList);
             }
 
 

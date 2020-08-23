@@ -270,26 +270,26 @@ class TicketsSiteController {
         ServiceInfo paymentsInfo = null;
 
 
-        try {
-            ResponseEntity<ServiceInfo> tickets = restTemplate.getForEntity(TICKETS_SERVICE + "/info", ServiceInfo.class);
-            ticketsInfo = tickets.getBody();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        try {
-            ResponseEntity<ServiceInfo> payments = restTemplate.getForEntity(PAYMENTS_SERVICE_EXTERNAL + "/info", ServiceInfo.class);
-            paymentsInfo = payments.getBody();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            ResponseEntity<ServiceInfo> tickets = restTemplate.getForEntity(TICKETS_SERVICE + "/info", ServiceInfo.class);
+//            ticketsInfo = tickets.getBody();
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        try {
+//            ResponseEntity<ServiceInfo> payments = restTemplate.getForEntity(PAYMENTS_SERVICE_EXTERNAL + "/info", ServiceInfo.class);
+//            paymentsInfo = payments.getBody();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
 
 
         model.addAttribute("version", version);
         model.addAttribute("sessionId", sessionId);
-        model.addAttribute("tickets", ticketsInfo);
-        model.addAttribute("payments", paymentsInfo);
+//        model.addAttribute("tickets", ticketsInfo);
+//        model.addAttribute("payments", paymentsInfo);
 
 
 
