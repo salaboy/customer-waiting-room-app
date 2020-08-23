@@ -92,30 +92,7 @@
         </div>
     </div>
 </div>
-<#--    <div class="queue">-->
-<#--        <div class="queue-header">-->
-<#--            <h2>Your tickets are reserved. Please pay:</h2>-->
-<#--            <p>Your buying ID is ${sessionId}</p>-->
 
-<#--        </div>-->
-<#--        <div class="queue-form">-->
-<#--            <form class="form" action="">-->
-<#--                <div class="form-field small">-->
-<#--                    <label>Credit Card Information</label>-->
-<#--                    <input type="number" id="creditCard">-->
-<#--                </div>-->
-
-<#--            </form>-->
-
-<#--        </div>-->
-<#--        <iframe id="paymentFrame" src="">-->
-
-<#--        </iframe>-->
-
-<#--        <div>-->
-<#--            <span id="paymentStatus"> Please Pay ... </span>-->
-<#--        </div>-->
-<#--    </div>-->
 <div class="button-layer">
     <a id="payButton" class="main-button" onclick="payTickets()">
         Pay
@@ -175,52 +152,6 @@
 
         xhr.send(JSON.stringify(data));
 
-
-
-        <#--var xhr = new XMLHttpRequest();-->
-        <#--xhr.open("POST", "/tickets/checkout", true);-->
-        <#--var data = JSON.stringify(-->
-        <#--    {-->
-        <#--        sessionId: "${sessionId}",-->
-        <#--        reservationId: "${reservationId}",-->
-        <#--        cc: cc-->
-        <#--    }-->
-        <#--);-->
-        <#--xhr.setRequestHeader('Content-Type', 'application/json');-->
-        <#--xhr.setRequestHeader('Ce-Id', 'CE-' + "${sessionId}");-->
-        <#--xhr.setRequestHeader('Ce-Type', 'Tickets.PaymentRequested');-->
-        <#--xhr.setRequestHeader('Ce-Source', 'website');-->
-        <#--xhr.setRequestHeader('correlationKey', "${reservationId}");-->
-
-        <#--/// curl -X POST http://customer-waiting-room-app.default.34.78.5.94.xip.io/router/message -H "Ce-Id: 123" -H "Ce-Type: NewCustomer"  -H "Ce-Source: curl" -H "Ce-Subject: hello"  -H "Content-Type: application/json" -H "correlationKey: 1" -d '"{\"sessionId\":\"1\"}"' -v-->
-
-        <#--xhr.onreadystatechange = function () {-->
-        <#--    if (xhr.status === 200) {-->
-        <#--        callback2(xhr.response);-->
-        <#--    }-->
-        <#--}-->
-
-        <#--xhr.send(JSON.stringify(data));-->
-
-
-        <#--xhr = new XMLHttpRequest();-->
-        <#--xhr.open("POST", "/router/message", true);-->
-
-        <#--xhr.setRequestHeader('Content-Type', 'application/json');-->
-        <#--xhr.setRequestHeader('Ce-Id', 'CE-' + "${sessionId}");-->
-        <#--xhr.setRequestHeader('Ce-Type', 'Tickets.PaymentRequested');-->
-        <#--xhr.setRequestHeader('Ce-Source', 'website');-->
-        <#--xhr.setRequestHeader('correlationKey', "${reservationId}");-->
-
-        <#--/// curl -X POST http://customer-waiting-room-app.default.34.78.5.94.xip.io/router/message -H "Ce-Id: 123" -H "Ce-Type: NewCustomer"  -H "Ce-Source: curl" -H "Ce-Subject: hello"  -H "Content-Type: application/json" -H "correlationKey: 1" -d '"{\"sessionId\":\"1\"}"' -v-->
-
-        <#--xhr.onreadystatechange = function () {-->
-        <#--    if (xhr.status === 200) {-->
-        <#--        callback1(xhr.response);-->
-        <#--    }-->
-        <#--}-->
-
-        <#--xhr.send(JSON.stringify(data));-->
 
     }
 

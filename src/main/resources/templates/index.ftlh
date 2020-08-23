@@ -45,13 +45,9 @@
 
         <div class="queue-header">
             <h2 id="queueTitle">Join the queue.</h2>
-            <#--            <h2>It's your turn!</h2>-->
-            <#--            <h2>You are number <span class="position" id="queuePosition">X</span> of <span id="queueSize">X</span>-->
-            <#--                people waiting.</h2>-->
             <p id="waitingLabel">There are currently <span id="queueSize">X</span> people waiting. Your approximate
                 waiting time will be <span id="queueWaitingTime">X</span> minutes.</p>
-            <p id="sessionIdLabel"></p>
-            <#--            <p>Buy your tickets when you are ready.</p>-->
+            <div id="sessionIdLabel" class="codesIds"></div>
         </div>
 
 
@@ -122,7 +118,7 @@
 
     function joinQueue() {
 
-        document.getElementById("sessionIdLabel").innerHTML = "${sessionId}";
+        document.getElementById("sessionIdLabel").innerHTML = "Session ID: <span>${sessionId}</span>";
 
 
         var xhr = new XMLHttpRequest();
@@ -182,6 +178,10 @@
                 waitingLabel.innerHTML = " Your approximate " +
                     "                waiting time is <span id=\"queueWaitingTime\">X</span> minutes.";
                 queueList.className = "queue-list";
+                var queueSize = document.getElementById('queueSize');
+                queueSize.innerHTML = response.size;
+                var queueWaitingTime = document.getElementById('queueWaitingTime');
+                queueWaitingTime.innerHTML = response.waitTime;
             } else if(!readyToBuy){
 
                 queueList.className = "queue-list queue-list-hidden";
@@ -193,10 +193,7 @@
             }
 
 
-            var queueSize = document.getElementById('queueSize');
-            queueSize.innerHTML = response.size;
-            var queueWaitingTime = document.getElementById('queueWaitingTime');
-            queueWaitingTime.innerHTML = response.waitTime;
+
             var queueList = document.getElementById('queue-list');
             queueList.innerHTML = "";
             var door = document.createElement("div");
