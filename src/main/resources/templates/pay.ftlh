@@ -30,7 +30,7 @@
 
     </div>
     <div class="header__title">
-        <h1>Tickets Portal v0.0.0 </h1>
+        <h1>Tickets Portal v${version}</h1>
     </div>
     <div class="header__options">
 

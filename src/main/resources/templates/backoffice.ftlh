@@ -30,7 +30,7 @@
 
     </div>
     <div class="header__title">
-        <h1>Waiting Room Demo v0.0.0 </h1>
+        <h1>Tickets Portal v${version}</h1>
     </div>
     <div class="header__options">
         <a href="/">
@@ -45,16 +45,7 @@
     </div>
 
     <div class="sessions" id="sessions">
-<#--        <div class="session">-->
-<#--            <div class="session__id">-->
-<#--                <span>1. </span>-->
-<#--                81390238-210931238901-238201938-->
-<#--            </div>-->
-<#--            <div class="session__actions">-->
-<#--                <div class="button button-remove">Remove</div>-->
-<#--                <div class="button">Other Action</div>-->
-<#--            </div>-->
-<#--        </div>-->
+
     </div>
 </div>
 <div class="button-layer">
@@ -94,7 +85,13 @@
                 for (i = 0; i < data.length; i++) {
                     const sessionId = data[i].sessionId;
                     var sessionDiv = document.createElement("div");
-                    sessionDiv.className = "session";
+
+                    if(sessionId.includes("mock")){
+                        sessionDiv.className = "session";
+                    }else{
+                        sessionDiv.className = "session my-session";
+                    }
+
                     var sessionIdDiv = document.createElement("div");
                     sessionIdDiv.className = "session__id"
                     var sessionIdSpan = document.createElement("span");
@@ -113,7 +110,7 @@
                     var removeSessionButton = document.createElement("div");
 
                     removeSessionButton.onclick = function () {
-                        abandonQueue(sessionId);
+                        abandonQueue(removeSessionButton, sessionId);
                     };
                     removeSessionButton.innerHTML = "Remove";
                     removeSessionButton.className = "button button-remove";
@@ -125,7 +122,9 @@
         xhr.send();
     }
 
-    function abandonQueue(sessionId) {
+    function abandonQueue(button, sessionId) {
+        var sessionBlock = button.parentNode.parentNode;
+        sessionBlock.parentNode.removeChild(sessionBlock);
         console.log("Abandoning queue for session: " + sessionId);
         var xhr = new XMLHttpRequest();
         xhr.open("POST", "/broker", true);
