@@ -1,5 +1,5 @@
 {{- if .Values.knativeDeploy }}
-apiVersion: serving.knative.dev/v1alpha1
+apiVersion: serving.knative.dev/v1
 kind: Service
 metadata:
 {{- if .Values.service.name }}
@@ -13,6 +13,9 @@ spec:
   runLatest:
     configuration:
       revisionTemplate:
+        metadata:
+          annotations:
+            autoscaling.knative.dev/minScale: "1"
         spec:
           container:
             image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
