@@ -14,12 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.gateway.filter.GatewayFilterChain;
-import org.springframework.cloud.gateway.filter.GlobalFilter;
-import org.springframework.cloud.gateway.route.Route;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -34,19 +30,16 @@ import org.springframework.web.reactive.socket.server.WebSocketService;
 import org.springframework.web.reactive.socket.server.support.HandshakeWebSocketService;
 import org.springframework.web.reactive.socket.server.support.WebSocketHandlerAdapter;
 import org.springframework.web.reactive.socket.server.upgrade.ReactorNettyRequestUpgradeStrategy;
-import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebSession;
 import reactor.core.publisher.EmitterProcessor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.net.URI;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import static java.util.UUID.randomUUID;
-import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.*;
 
 @SpringBootApplication
 @Slf4j
@@ -59,12 +52,11 @@ public class TicketsWebSiteService {
     @Autowired
     private WebSocketHandler webSocketHandler;
 
-    private List<String> users = new CopyOnWriteArrayList<String>();
 
-    @Bean
-    public GlobalFilter customFilter() {
-        return new LoggingFilter();
-    }
+//    @Bean
+//    public GlobalFilter customFilter() {
+//        return new LoggingFilter();
+//    }
 
     @Bean
     public HandlerMapping webSocketHandlerMapping() {
@@ -93,21 +85,21 @@ public class TicketsWebSiteService {
 
 }
 
-@Slf4j
-class LoggingFilter implements GlobalFilter {
-
-
-    @Override
-    public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        Set<URI> uris = exchange.getAttributeOrDefault(GATEWAY_ORIGINAL_REQUEST_URL_ATTR, Collections.emptySet());
-        String originalUri = (uris.isEmpty()) ? "Unknown" : uris.iterator().next().toString();
-        Route route = exchange.getAttribute(GATEWAY_ROUTE_ATTR);
-        URI routeUri = exchange.getAttribute(GATEWAY_REQUEST_URL_ATTR);
-        log.info(">>> Incoming request " + originalUri + " is routed to id: " + route.getId()
-                + ", uri:" + routeUri);
-        return chain.filter(exchange);
-    }
-}
+//@Slf4j
+//class LoggingFilter implements GlobalFilter {
+//
+//
+//    @Override
+//    public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+//        Set<URI> uris = exchange.getAttributeOrDefault(GATEWAY_ORIGINAL_REQUEST_URL_ATTR, Collections.emptySet());
+//        String originalUri = (uris.isEmpty()) ? "Unknown" : uris.iterator().next().toString();
+//        Route route = exchange.getAttribute(GATEWAY_ROUTE_ATTR);
+//        URI routeUri = exchange.getAttribute(GATEWAY_REQUEST_URL_ATTR);
+//        log.info(">>> Incoming request " + originalUri + " is routed to id: " + route.getId()
+//                + ", uri:" + routeUri);
+//        return chain.filter(exchange);
+//    }
+//}
 
 @Component
 @Slf4j
@@ -256,10 +248,7 @@ class TicketsSiteController {
     @Value("${PAYMENTS_SERVICE_EXTERNAL:http://payments-service.default.34.121.118.94.xip.io}") //it needs to be the public IP here..
     private String PAYMENTS_SERVICE_EXTERNAL;
 
-    @Value("${K_SINK:http://broker-ingress.knative-eventing.svc.cluster.local/default/default}") //it needs to be the public IP here..
-    private String K_SINK;
 
-    private RestTemplate restTemplate = new RestTemplate();
 
 
     @GetMapping("/")
