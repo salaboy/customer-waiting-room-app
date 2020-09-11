@@ -24,3 +24,31 @@ spec:
       type: Tickets.PaymentsAuthorized
   subscriber:
     uri: http://customer-waiting-room-app.default.svc.cluster.local/api/
+
+---
+apiVersion: eventing.knative.dev/v1
+kind: Trigger
+metadata:
+  name: ui-tickets-reservation-oneminnotification-trigger
+  namespace: default
+spec:
+  broker: default
+  filter:
+    attributes:
+      type: Tickets.Reservation1MExpired
+  subscriber:
+    uri: http://customer-waiting-room-app.default.svc.cluster.local/api/
+
+---
+apiVersion: eventing.knative.dev/v1
+kind: Trigger
+metadata:
+  name: ui-tickets-reservation-timedout-trigger
+  namespace: default
+spec:
+  broker: default
+  filter:
+    attributes:
+      type: Tickets.ReservationTimedOut
+  subscriber:
+    uri: http://customer-waiting-room-app.default.svc.cluster.local/api/

@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="css/normalize.css">
     <link rel="stylesheet" href="css/main.css">
     <link href="https://fonts.googleapis.com/css?family=Rubik:300,400&display=swap" rel="stylesheet">
-
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 
     <meta name="theme-color" content="#E7E7EA">
 </head>
@@ -108,11 +108,13 @@
         integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <script>window.jQuery || document.write('<script src="js/vendor/jquery-3.4.1.min.js"><\/script>')</script>
 <script src="js/plugins.js"></script>
-
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 <script type="text/javascript">
     function next() {
         window.location.href = "/yourtickets?sessionId=${sessionId}&reservationId=${reservationId}";
     }
+
+
 
     function payTickets() {
 
@@ -160,7 +162,7 @@
         document.getElementById("paymentFrame").width="100%";
         document.getElementById("paymentFrame").height="300px";
        // document.getElementById("paymentFrame").src = "http://localhost:8083/?sessionId=${sessionId}&reservationId=${reservationId}"
-        connect();
+
     }
 
 
@@ -194,6 +196,10 @@
                 document.getElementById("nextButton").className = "main-button";
                 document.getElementById("payButton").className = "main-button hidden";
 
+            } else if (ce["type"] === "Tickets.Reservation1MExpired") {
+                toast();
+            } else if (ce["type"] === "Tickets.ReservationTimedOut") {
+                sock.close(1000, "Tickets Reservation Time Out");
             }
         };
 
@@ -203,8 +209,11 @@
         sock.onclose = function (event) {
 
             console.log('Info: Closing Connection. -> ' + event);
+            window.location.href = "/index";
         };
     }
+
+    connect();
 
 </script>
 

@@ -126,7 +126,6 @@ class ReactiveWebSocketHandler implements WebSocketHandler {
 
     @Override
     public Mono<Void> handle(WebSocketSession webSocketSession) {
-        String id = webSocketSession.getId();
 
         String sessionId = webSocketSession.getHandshakeInfo().getUri().getQuery().split("=")[1];
         if (sessions.add(sessionId)) {
