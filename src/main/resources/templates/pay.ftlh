@@ -117,7 +117,7 @@
     // Set the date we're counting down to
     var now = new Date();
     var countDownDate = now.addMinutes(3).getTime();
-
+    var distance;
     // Update the count down every 1 second
     var x = setInterval(function() {
 
@@ -125,7 +125,7 @@
         var now = new Date().getTime();
 
         // Find the distance between now and the count down date
-        var distance = countDownDate - now;
+        distance = countDownDate - now;
 
         // Time calculations for days, hours, minutes and seconds
         var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
@@ -229,8 +229,9 @@
                 document.getElementById("payButton").className = "main-button hidden";
 
             } else if (ce["type"] === "Tickets.Reservation1MExpired") {
-                toast();
+                makeYourPaymentReminderToast();
             } else if (ce["type"] === "Tickets.ReservationTimedOut") {
+                paymentTimedOutToast();
                 var xhr = new XMLHttpRequest();
                 xhr.open("POST", "/broker", true);
                 var data = JSON.stringify(
@@ -271,15 +272,33 @@
         sock.close(1000, "Tickets Reservation Time Out");
         window.location.href = "/";
     }
-    function toast(){
+
+    function paymentTimedOutToast(){
         Toastify({
-            text: "This is a toast",
+            text: "Payment Timed Out",
             duration: 3000,
             destination: "https://github.com/apvarun/toastify-js",
             newWindow: true,
             close: true,
             gravity: "top", // `top` or `bottom`
-            position: 'left', // `left`, `center` or `right`
+            position: 'center', // `left`, `center` or `right`
+            backgroundColor: "linear-gradient(to right, #eb5234, #eb2600)",
+            stopOnFocus: true, // Prevents dismissing of toast on hover
+            onClick: function(){} // Callback after click
+        }).showToast();
+    }
+
+    function makeYourPaymentReminderToast(){
+        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        Toastify({
+            text: "Make your payment, your time is running out. You have " + minutes + "m " + seconds + "s left.",
+            duration: 3000,
+            destination: "https://github.com/apvarun/toastify-js",
+            newWindow: true,
+            close: true,
+            gravity: "top", // `top` or `bottom`
+            position: 'center', // `left`, `center` or `right`
             backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
             stopOnFocus: true, // Prevents dismissing of toast on hover
             onClick: function(){} // Callback after click
