@@ -46,7 +46,7 @@
         <div class="queue-header">
             <h2>Pay your tickets.</h2>
             <div class="codesIds">Session Id: <span>${sessionId}</span></div>
-
+            <p id="timer"></p>
         </div>
         <div class="queue-form">
             <iframe id="paymentFrame" src="" class="bankframe" width="0%" height="0px"></iframe>
@@ -110,6 +110,38 @@
 <script src="js/plugins.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 <script type="text/javascript">
+    Date.prototype.addMinutes = function(minutes) {
+        this.setMinutes(this.getMinutes() + minutes);
+        return this;
+    };
+    // Set the date we're counting down to
+    var now = new Date();
+    var countDownDate = now.addMinutes(3).getTime();
+
+    // Update the count down every 1 second
+    var x = setInterval(function() {
+
+        // Get today's date and time
+        var now = new Date().getTime();
+
+        // Find the distance between now and the count down date
+        var distance = countDownDate - now;
+
+        // Time calculations for days, hours, minutes and seconds
+        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        // Output the result in an element with id="demo"
+        document.getElementById("timer").innerHTML =  minutes + "m " + seconds + "s ";
+
+        // If the count down is over, write some text
+        if (distance < 0) {
+            clearInterval(x);
+            document.getElementById("timer").innerHTML = "EXPIRED";
+        }
+    }, 1000);
+
+
     function next() {
         window.location.href = "/yourtickets?sessionId=${sessionId}&reservationId=${reservationId}";
     }
@@ -209,8 +241,23 @@
         sock.onclose = function (event) {
 
             console.log('Info: Closing Connection. -> ' + event);
-            window.location.href = "/index";
+            window.location.href = "/";
         };
+    }
+
+    function toast(){
+        Toastify({
+            text: "This is a toast",
+            duration: 3000,
+            destination: "https://github.com/apvarun/toastify-js",
+            newWindow: true,
+            close: true,
+            gravity: "top", // `top` or `bottom`
+            position: 'left', // `left`, `center` or `right`
+            backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
+            stopOnFocus: true, // Prevents dismissing of toast on hover
+            onClick: function(){} // Callback after click
+        }).showToast();
     }
 
     connect();
