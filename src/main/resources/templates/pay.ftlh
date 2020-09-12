@@ -46,7 +46,7 @@
         <div class="queue-header">
             <h2>Pay your tickets.</h2>
             <div class="codesIds">Session Id: <span>${sessionId}</span></div>
-            <p id="timer"></p>
+            <h3>Your Tickets are being reserved for: <p id="timer"></p></h3>
         </div>
         <div class="queue-form">
             <iframe id="paymentFrame" src="" class="bankframe" width="0%" height="0px"></iframe>
@@ -116,7 +116,7 @@
     };
     // Set the date we're counting down to
     var now = new Date();
-    var countDownDate = now.addMinutes(3).getTime();
+    var countDownDate = now.addMinutes(2).getTime();
     var distance;
     // Update the count down every 1 second
     var x = setInterval(function() {
