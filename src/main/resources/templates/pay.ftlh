@@ -231,7 +231,27 @@
             } else if (ce["type"] === "Tickets.Reservation1MExpired") {
                 toast();
             } else if (ce["type"] === "Tickets.ReservationTimedOut") {
-                sock.close(1000, "Tickets Reservation Time Out");
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "/broker", true);
+                var data = JSON.stringify(
+                    {
+                        sessionId:  "${sessionId}",
+                    }
+                );
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                xhr.setRequestHeader('Ce-Id', 'CE-' +  "${sessionId}");
+                xhr.setRequestHeader('Ce-Type', 'Queue.CustomerAbandoned');
+                xhr.setRequestHeader('Ce-Source', 'website');
+                xhr.setRequestHeader('Ce-Specversion', '1.0');
+                xhr.setRequestHeader('correlationKey',  "${sessionId}");
+
+
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4) {
+                        callbackClose(xhr.response);
+                    }
+                }
+
             }
         };
 
@@ -241,10 +261,14 @@
         sock.onclose = function (event) {
 
             console.log('Info: Closing Connection. -> ' + event);
-            window.location.href = "/";
+
         };
     }
 
+    function callbackClose(){
+        sock.close(1000, "Tickets Reservation Time Out");
+        window.location.href = "/";
+    }
     function toast(){
         Toastify({
             text: "This is a toast",

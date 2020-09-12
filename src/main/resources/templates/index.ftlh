@@ -67,10 +67,6 @@
     <a id="proceed" onclick="proceed();" class="main-button hidden">
         Reserve Tickets
     </a>
-
-    <a id="toastButton" onclick="toast();" class="main-button">
-        Toast
-    </a>
 </div>
 
 
@@ -85,21 +81,6 @@
     document.getElementById('proceed').disabled = true;
 
     var connected = false;
-
-    function toast(){
-        Toastify({
-            text: "This is a toast",
-            duration: 3000,
-            destination: "https://github.com/apvarun/toastify-js",
-            newWindow: true,
-            close: true,
-            gravity: "top", // `top` or `bottom`
-            position: 'left', // `left`, `center` or `right`
-            backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
-            stopOnFocus: true, // Prevents dismissing of toast on hover
-            onClick: function(){} // Callback after click
-        }).showToast();
-    }
 
     function quitQueue() {
         document.getElementById("sessionIdLabel").innerHTML = "";
