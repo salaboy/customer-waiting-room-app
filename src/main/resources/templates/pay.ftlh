@@ -252,6 +252,8 @@
                     }
                 }
 
+                xhr.send(JSON.stringify(data));
+
             }
         };
 
