@@ -656,6 +656,7 @@ body.backoffice .block.header .header__options a span {
   border-radius: 10px;
   margin: 0 100px;
   max-width: 605px;
+  position: relative;
 
 }
 .queue .queue-header {
@@ -947,6 +948,16 @@ body.backoffice .button-layer {
   border-radius: 15px;
   right: -15px;
   top: calc(50% - 15px);
+}
+
+div#timer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: #333;
+  color: #fff;
+  padding: 10px 15px;
+  border-radius: 0 10px 0 10px;
 }
 .ticket-info {
   position: absolute;

@@ -43,10 +43,10 @@
 
     </div>
     <div class="queue">
+        <div id="timer"></div>
         <div class="queue-header">
             <h2>Pay your tickets.</h2>
             <div class="codesIds">Session Id: <span>${sessionId}</span></div>
-            <h3>Your Tickets are being reserved for: <p id="timer"></p></h3>
         </div>
         <div class="queue-form">
             <iframe id="paymentFrame" src="" class="bankframe" width="0%" height="0px"></iframe>
@@ -149,7 +149,7 @@
 
 
     function payTickets() {
-
+        document.getElementById("timer").innerText = "";
 
         document.getElementById("payButton").className = "main-button disabled";
         document.getElementById("ccFormFields").className = "form-field hidden";
@@ -270,21 +270,24 @@
 
     function callbackClose(){
         sock.close(1000, "Tickets Reservation Time Out");
+
         window.location.href = "/";
     }
 
     function paymentTimedOutToast(){
         Toastify({
             text: "Payment Timed Out",
-            duration: 3000,
+            duration: 10000,
             destination: "https://github.com/apvarun/toastify-js",
             newWindow: true,
-            close: true,
+            close: false,
             gravity: "top", // `top` or `bottom`
             position: 'center', // `left`, `center` or `right`
             backgroundColor: "linear-gradient(to right, #eb5234, #eb2600)",
             stopOnFocus: true, // Prevents dismissing of toast on hover
-            onClick: function(){} // Callback after click
+            onClick: function(){
+                window.location.href = "/";
+            } // Callback after click
         }).showToast();
     }
 
@@ -293,7 +296,7 @@
         var seconds = Math.floor((distance % (1000 * 60)) / 1000);
         Toastify({
             text: "Make your payment, your time is running out. You have " + minutes + "m " + seconds + "s left.",
-            duration: 3000,
+            duration: 5000,
             destination: "https://github.com/apvarun/toastify-js",
             newWindow: true,
             close: true,
