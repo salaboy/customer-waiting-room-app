@@ -150,7 +150,7 @@
 
     function payTickets() {
         document.getElementById("timer").innerText = "";
-
+        clearInterval(x);
         document.getElementById("payButton").className = "main-button disabled";
         document.getElementById("ccFormFields").className = "form-field hidden";
         document.getElementById("ccFormFields2").className = "form-field hidden";
