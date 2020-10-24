@@ -14,6 +14,8 @@ jx:
 # define environment variables here as a map of key: value
 env:
   PAYMENTS_SERVICE: http://payments-service.default.svc.cluster.local
+  QUEUE_SERVICE: http://queue-service.default.svc.cluster.local
+  TICKETS_SERVICE: http://tickets-service.default.svc.cluster.local
   SERVER_PORT: 8080
 # enable this flag to use knative serve to deploy the app
 knativeDeploy: true
